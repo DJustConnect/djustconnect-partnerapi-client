@@ -26,5 +26,9 @@ namespace DjustConnect.PartnerAPI.Client
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
+        public static DarStatusResult FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<DarStatusResult>(data);
+        }
     }
 }
