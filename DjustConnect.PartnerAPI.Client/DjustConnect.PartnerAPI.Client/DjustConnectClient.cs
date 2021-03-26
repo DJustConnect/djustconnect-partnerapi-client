@@ -16,7 +16,7 @@ namespace DjustConnect.PartnerAPI.Client
         //protected Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
         //protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
 
-        public DjustConnectClient(HttpClient httpClient) : base(httpClient) // no constructor with 1 args
+        public DjustConnectClient(HttpClient httpClient) : base(httpClient)
         {
             _httpClient = httpClient;
             //_settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
@@ -31,7 +31,7 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var store = new X509Store("My", StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadOnly);
-            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, session.CertThumbprint, false); // No session in consumercsharp
+            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, "CertThumbprint goes here", false); // No session in consumercsharp
             if (certificates.Count == 0)
             {
                 throw new InvalidOperationException($"Certificate not found for CN=client.ikmnet.be in LocalMachine/My."); // Change to correct CN
