@@ -22,16 +22,16 @@ namespace DjustConnect.PartnerAPI.Client
         {
             return null; // returns a list/array of all Resources
         }
-        public Task GetFarmIdTypes() // api/FarmIdType - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmIdType
+        public Task GetFarmIdTypesAsync() // api/FarmIdType - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmIdType
 
         {
             return null; // returns a list/array of all FarmIdTypes
         }
-        public Task GetFarmMapping() // api/FarmMapping - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmMapping
+        public Task GetFarmMappingAsync() // api/FarmMapping - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmMapping
         {
             return null; // returns farm mapping - 415 Unsupported Media Type
         }
-        public Task GetResourceHealth() // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
+        public Task GetResourceHealthAsync() // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
         {
             return null; // returns the current health of the resource you have access to
         }

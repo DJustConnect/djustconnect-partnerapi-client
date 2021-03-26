@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class ResourceResult
+    public class ResourceResult // Doublecheck which properties are necessary
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }

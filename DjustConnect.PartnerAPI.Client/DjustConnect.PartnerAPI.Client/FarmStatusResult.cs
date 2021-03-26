@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class FarmStatusResult
+    public class FarmStatusResult // Why no partnerName JsonProperty?
     {
         [JsonProperty("farmNumber", Required = Required.Always)]
         public string FarmNumber { get; set; }
