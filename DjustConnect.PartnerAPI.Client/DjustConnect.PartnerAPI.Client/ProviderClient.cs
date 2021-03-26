@@ -10,8 +10,8 @@ namespace DjustConnect.PartnerAPI.Client
 {
     public class ProviderClient : DjustConnectClient, IProviderClient
     {
-        //public ProviderClient(HttpClient httpClient) : base(httpClient)
-        //{
-        //}
+        public ProviderClient(HttpClient httpClient) : base(httpClient)
+        {
+        }
     }
 }

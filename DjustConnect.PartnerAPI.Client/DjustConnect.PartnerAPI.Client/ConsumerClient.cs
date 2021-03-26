@@ -12,9 +12,9 @@ namespace DjustConnect.PartnerAPI.Client
 {
     public class ConsumerClient : DjustConnectClient
     {
-        //public ConsumerClient(HttpClient httpClient) : base(httpClient)
-        //{
-        //}
+        public ConsumerClient(HttpClient httpClient) : base(httpClient)
+        {
+        }
 
         /* TODO first next step(s):
 			api/Resource

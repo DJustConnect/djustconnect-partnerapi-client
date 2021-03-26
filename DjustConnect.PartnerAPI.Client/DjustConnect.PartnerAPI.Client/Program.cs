@@ -10,10 +10,10 @@ namespace DjustConnect.PartnerAPI.Client
     {
 		public void Main() //http?
 		{
-			//var http = DjustConnectClient.CreateHttpClient("thumbprint here", "subscription key here");
-			//var consumerclient = new ConsumerClient(http);
-			//var darstatusresults = consumerclient.GetDarStatusAsync("farm number here").Result;
-			// TODO do something with dar status result
-		}
+            var http = DjustConnectClient.CreateHttpClient("thumbprint here", "subscription key here");
+            var consumerclient = new ConsumerClient(http);
+            var darstatusresults = consumerclient.GetDarStatusAsync("farm number here").Result;
+            // TODO do something with dar status result
+        }
 	}
 }
