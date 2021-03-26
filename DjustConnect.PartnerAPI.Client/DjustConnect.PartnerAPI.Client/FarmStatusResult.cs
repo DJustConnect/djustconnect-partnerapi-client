@@ -9,9 +9,9 @@ namespace DjustConnect.PartnerAPI.Client
 {
     public class FarmStatusResult
     {
-        [JsonProperty("farmNumber", Required = Newtonsoft.Json.Required.Always)]
+        [JsonProperty("farmNumber", Required = Required.Always)]
         public string FarmNumber { get; set; }
-        [JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        [JsonProperty("status", Required = Required.Always)]
         public string Status { get; set; }
 
         public string ToJson()

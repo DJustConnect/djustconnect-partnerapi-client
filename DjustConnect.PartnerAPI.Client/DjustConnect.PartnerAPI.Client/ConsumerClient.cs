@@ -18,12 +18,26 @@ namespace DjustConnect.PartnerAPI.Client
         public ConsumerClient(HttpClient httpClient, string thumbprint, string subscriptionkey) : base(httpClient)
         {
         }
+        public Task GetResourcesAsync() // api/Resource - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Resource
+        {
+            return null; // returns a list/array of all Resources
+        }
+        public Task GetFarmIdTypes() // api/FarmIdType - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmIdType
+
+        {
+            return null; // returns a list/array of all FarmIdTypes
+        }
+        public Task GetFarmMapping() // api/FarmMapping - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmMapping
+        {
+            return null; // returns farm mapping - 415 Unsupported Media Type
+        }
+        public Task GetResourceHealth() // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
+        {
+            return null; // returns the current health of the resource you have access to
+        }
+
 
         /* TODO first next step(s):
-			api/Resource
-			api/FarmIdType
-			api/FarmMapping
-			api/Consumer/resource-health
 			
 			api/RarStatus
 			api/ConsumerAccess - GET
@@ -33,6 +47,7 @@ namespace DjustConnect.PartnerAPI.Client
 			api/Consumer/push/activate - POST
 			api/Consumer/push/deactivate - POST
 		*/
+
 
         /// <exception cref="SwaggerException">A server side error occurred.</exception> // DjustConnectException?
         /// <exception cref="SwaggerException">A server side error occurred.</exception> // DjustConnectException?
