@@ -15,6 +15,9 @@ namespace DjustConnect.PartnerAPI.Client
         public ConsumerClient(HttpClient httpClient) : base(httpClient)
         {
         }
+        public ConsumerClient(HttpClient httpClient, string thumbprint, string subscriptionkey) : base(httpClient)
+        {
+        }
 
         /* TODO first next step(s):
 			api/Resource

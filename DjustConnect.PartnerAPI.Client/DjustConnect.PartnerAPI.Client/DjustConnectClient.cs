@@ -16,7 +16,7 @@ namespace DjustConnect.PartnerAPI.Client
         //protected Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
         //protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
 
-        public DjustConnectClient(HttpClient httpClient) : base(httpClient)
+        public DjustConnectClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
             //_settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
@@ -41,7 +41,7 @@ namespace DjustConnect.PartnerAPI.Client
             var clientHandler = new HttpClientHandler();
             clientHandler.ClientCertificates.Add(certificate);
             clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            http = new HttpClient(clientHandler); // How do I use the http var from Program?
+            var http = new HttpClient(clientHandler);
             http.DefaultRequestHeaders.Add("DjustConnect-Subscription-Key", subscriptionkey);
             return http;
         }
