@@ -13,17 +13,27 @@ namespace DjustConnect.PartnerAPI.Client
 
         public Dictionary<string, IEnumerable<string>> Headers { get; private set; }
 
-        //public SwaggerException(string message, int statusCode, string response, Dictionary<string, IEnumerable<string>> headers, Exception innerException)
-        //    : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + response.Substring(0, response.Length >= 512 ? 512 : response.Length), innerException)
-        //{
-        //    StatusCode = statusCode;
-        //    Response = response;
-        //    Headers = headers;
-        //}
+        public DjustConnectException(string message, int statusCode, string response, Dictionary<string, IEnumerable<string>> headers, Exception innerException)
+            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + response.Substring(0, response.Length >= 512 ? 512 : response.Length), innerException)
+        {
+            StatusCode = statusCode;
+            Response = response;
+            Headers = headers;
+        }
 
         public override string ToString()
         {
             return string.Format("HTTP Response: \n\n{0}\n\n{1}", Response, base.ToString());
+        }
+    }
+    public partial class DjustConnectException<TResult> : DjustConnectException
+    {
+        public TResult Result { get; private set; }
+
+        public DjustConnectException(string message, int statusCode, string response, Dictionary<string, IEnumerable<string>> headers, TResult result, Exception innerException)
+            : base(message, statusCode, response, headers, innerException)
+        {
+            Result = result;
         }
     }
 }
