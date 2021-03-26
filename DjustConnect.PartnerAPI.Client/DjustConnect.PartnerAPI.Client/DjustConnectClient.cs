@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class DjustConnectClient
+    public class DjustConnectClient // base? session? http?
     {
-       //TODO How to handle the ACC base url?
+        //TODO How to handle the ACC base url?
         //public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";
         //protected System.Net.Http.HttpClient _httpClient;
         //public DjustConnectClient(HttpClient httpClient) : base(httpClient)
