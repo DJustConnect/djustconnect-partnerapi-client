@@ -8,7 +8,7 @@ namespace DjustConnect.PartnerAPI.Client
 {
     public class Program
     {
-		public void Main() //http?
+		public void Main() // How to use this http var?
 		{
             var http = DjustConnectClient.CreateHttpClient("thumbprint here", "subscription key here");
             var consumerclient = new ConsumerClient(http);

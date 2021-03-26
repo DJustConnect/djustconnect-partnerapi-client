@@ -10,7 +10,7 @@ using DjustConnect.PartnerAPI.Client.Interfaces;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class ConsumerClient : DjustConnectClient
+    public class ConsumerClient : DjustConnectClient, IConsumerClient
     {
         public ConsumerClient(HttpClient httpClient) : base(httpClient)
         {
@@ -55,10 +55,10 @@ namespace DjustConnect.PartnerAPI.Client
                     request_.Method = new HttpMethod("GET");
                     request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-                    PrepareRequest(client_, request_, urlBuilder_);
+                    
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
+                    
 
                     var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
@@ -70,7 +70,7 @@ namespace DjustConnect.PartnerAPI.Client
                                 headers_[item_.Key] = item_.Value;
                         }
 
-                        ProcessResponse(client_, response_);
+                        
 
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
@@ -128,11 +128,9 @@ namespace DjustConnect.PartnerAPI.Client
                     request_.Method = new HttpMethod("GET");
                     request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-                    PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);
-
+                   
                     var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
                     {
@@ -142,8 +140,6 @@ namespace DjustConnect.PartnerAPI.Client
                             foreach (var item_ in response_.Content.Headers)
                                 headers_[item_.Key] = item_.Value;
                         }
-
-                        ProcessResponse(client_, response_);
 
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")

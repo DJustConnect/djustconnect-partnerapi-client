@@ -13,16 +13,25 @@ namespace DjustConnect.PartnerAPI.Client
         //TODO How to handle the ACC base url?
         public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";
         protected HttpClient _httpClient;
-        public DjustConnectClient(HttpClient httpClient) : base(httpClient)
+        //protected Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
+        //protected Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings { get { return _settings.Value; } }
+
+        public DjustConnectClient(HttpClient httpClient) : base(httpClient) // no constructor with 1 args
         {
             _httpClient = httpClient;
+            //_settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
+            //{
+            //    var settings = new Newtonsoft.Json.JsonSerializerSettings();
+            //    UpdateJsonSerializerSettings(settings);
+            //    return settings;
+            //});
         }
 
         public static HttpClient CreateHttpClient(string thumbprint, string subscriptionkey)
         {
             var store = new X509Store("My", StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadOnly);
-            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, session.CertThumbprint, false);
+            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, session.CertThumbprint, false); // No session in consumercsharp
             if (certificates.Count == 0)
             {
                 throw new InvalidOperationException($"Certificate not found for CN=client.ikmnet.be in LocalMachine/My."); // Change to correct CN
@@ -32,7 +41,7 @@ namespace DjustConnect.PartnerAPI.Client
             var clientHandler = new HttpClientHandler();
             clientHandler.ClientCertificates.Add(certificate);
             clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            http = new HttpClient(clientHandler);
+            http = new HttpClient(clientHandler); // How do I use the http var from Program?
             http.DefaultRequestHeaders.Add("DjustConnect-Subscription-Key", subscriptionkey);
             return http;
         }
