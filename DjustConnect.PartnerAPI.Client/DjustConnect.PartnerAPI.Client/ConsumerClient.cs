@@ -73,10 +73,10 @@ namespace DjustConnect.PartnerAPI.Client
                     request_.Method = new HttpMethod("GET");
                     request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
-                    
+
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-                    
+
 
                     var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
@@ -88,7 +88,7 @@ namespace DjustConnect.PartnerAPI.Client
                                 headers_[item_.Key] = item_.Value;
                         }
 
-                        
+
 
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
@@ -124,14 +124,14 @@ namespace DjustConnect.PartnerAPI.Client
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<FarmStatusDTO[]> GetFarmStatusAsync(string farmNumberFilter)
+        public Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter)
         {
             return GetFarmStatusAsync(farmNumberFilter, CancellationToken.None);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<FarmStatusDTO[]> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
+        public async Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmStatus?");
@@ -148,7 +148,7 @@ namespace DjustConnect.PartnerAPI.Client
 
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-                   
+
                     var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
                     {
@@ -165,7 +165,14 @@ namespace DjustConnect.PartnerAPI.Client
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             try
                             {
-                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmStatusDTO[]>(responseData_);
+                                var result_ = new PagedResult<FarmStatusDTO> // Verhuizen naar DjustConnectClient als Helper methode
+                                {
+                                    PageNumber = headers_["X-PageNumber"].Select(x=>Convert.ToInt32(x)).Single(),
+                                    Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
+                                    PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
+                                    TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
+                                    Result = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmStatusDTO[]>(responseData_)
+                                };
                                 return result_;
                             }
                             catch (Exception exception_)

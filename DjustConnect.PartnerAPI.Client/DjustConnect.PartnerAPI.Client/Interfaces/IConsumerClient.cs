@@ -11,7 +11,7 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
     {
         Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter);
         Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
-        Task<FarmStatusDTO[]> GetFarmStatusAsync(string farmNumberFilter);
-        Task<FarmStatusDTO[]> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
+        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter);
+        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
     }
 }
