@@ -15,15 +15,16 @@ namespace DjustConnect.PartnerAPI.Client
         public ConsumerClient(HttpClient httpClient) : base(httpClient)
         {
         }
-        public ConsumerClient(HttpClient httpClient, string thumbprint, string subscriptionkey) : base(httpClient)
+        public ConsumerClient(string thumbprint, string subscriptionkey)
         {
+            _httpClient = DjustConnectClient.CreateHttpClient(thumbprint, subscriptionkey);
         }
+
         public Task GetResourcesAsync() // api/Resource - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Resource
         {
             return null; // returns a list/array of all Resources
         }
         public Task GetFarmIdTypesAsync() // api/FarmIdType - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmIdType
-
         {
             return null; // returns a list/array of all FarmIdTypes
         }
@@ -49,19 +50,18 @@ namespace DjustConnect.PartnerAPI.Client
 		*/
 
 
-        /// <exception cref="SwaggerException">A server side error occurred.</exception> // DjustConnectException?
-        /// <exception cref="SwaggerException">A server side error occurred.</exception> // DjustConnectException?
-        public Task<DarStatusResult[]> GetDarStatusAsync(string farmNumberFilter)
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        public Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter)
         {
             return GetDarStatusAsync(farmNumberFilter, CancellationToken.None);
         }
 
-        /// <exception cref="SwaggerException">A server side error occurred.</exception> // DjustConnectException?
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<DarStatusResult[]> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
+        public async Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/DarStatus?PageSize=100&");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/DarStatus?PageSize=100&"); // paged result, paging parameters?
             urlBuilder_.Append("FarmNumberFilter=").Append(Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
@@ -96,7 +96,7 @@ namespace DjustConnect.PartnerAPI.Client
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             try
                             {
-                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<DarStatusResult[]>(responseData_);
+                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<DarStatusDTO[]>(responseData_);
                                 return result_;
                             }
                             catch (Exception exception_)
@@ -123,15 +123,15 @@ namespace DjustConnect.PartnerAPI.Client
             }
         }
 
-        ///// <exception cref="SwaggerException">A server side error occurred.</exception> // DjustConnectException?
-        public Task<FarmStatusResult[]> GetFarmStatusAsync(string farmNumberFilter)
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        public Task<FarmStatusDTO[]> GetFarmStatusAsync(string farmNumberFilter)
         {
             return GetFarmStatusAsync(farmNumberFilter, CancellationToken.None);
         }
 
-        /// <exception cref="SwaggerException">A server side error occurred.</exception> // DjustConnectException?
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<FarmStatusResult[]> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
+        public async Task<FarmStatusDTO[]> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmStatus?");
@@ -165,7 +165,7 @@ namespace DjustConnect.PartnerAPI.Client
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             try
                             {
-                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmStatusResult[]>(responseData_);
+                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmStatusDTO[]>(responseData_);
                                 return result_;
                             }
                             catch (Exception exception_)

@@ -14,6 +14,9 @@ namespace DjustConnect.PartnerAPI.Client
         public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";
         protected HttpClient _httpClient;
 
+        protected DjustConnectClient()
+        {
+        }
         public DjustConnectClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -23,7 +26,7 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var store = new X509Store("My", StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadOnly);
-            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, "CertThumbprint goes here", false); // !!
+            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false); // !!
             if (certificates.Count == 0)
             {
                 throw new InvalidOperationException($"Certificate not found for CN=client.ikmnet.be in LocalMachine/My."); // Change to correct CN
