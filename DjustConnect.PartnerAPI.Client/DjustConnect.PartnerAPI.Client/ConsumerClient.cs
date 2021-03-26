@@ -66,7 +66,7 @@ namespace DjustConnect.PartnerAPI.Client
                     var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
                     {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
                         if (response_.Content != null && response_.Content.Headers != null)
                         {
                             foreach (var item_ in response_.Content.Headers)
@@ -84,7 +84,7 @@ namespace DjustConnect.PartnerAPI.Client
                                 var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<DarStatusResult[]>(responseData_);
                                 return result_;
                             }
-                            catch (System.Exception exception_)
+                            catch (Exception exception_)
                             {
                                 throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
                             }
@@ -118,9 +118,9 @@ namespace DjustConnect.PartnerAPI.Client
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<FarmStatusResult[]> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
         {
-            var urlBuilder_ = new System.Text.StringBuilder();
+            var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmStatus?");
-            urlBuilder_.Append("FarmNumberFilter=").Append(System.Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
+            urlBuilder_.Append("FarmNumberFilter=").Append(Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
             var client_ = _httpClient;
@@ -153,7 +153,7 @@ namespace DjustConnect.PartnerAPI.Client
                                 var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmStatusResult[]>(responseData_);
                                 return result_;
                             }
-                            catch (System.Exception exception_)
+                            catch (Exception exception_)
                             {
                                 throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
                             }
