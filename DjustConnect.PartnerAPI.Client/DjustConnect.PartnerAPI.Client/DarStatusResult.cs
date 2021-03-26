@@ -21,5 +21,10 @@ namespace DjustConnect.PartnerAPI.Client
         public string ResourceStatus { get; set; }
         [JsonProperty("darStatus", Required = Newtonsoft.Json.Required.Always)]
         public string DarStatus { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
     }
 }
