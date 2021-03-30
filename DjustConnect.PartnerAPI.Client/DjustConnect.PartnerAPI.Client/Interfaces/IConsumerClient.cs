@@ -9,8 +9,8 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
 {
     public interface IConsumerClient
     {
-        Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter);
-        Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
+        Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter);
+        Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
     }

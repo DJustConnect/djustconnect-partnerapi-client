@@ -51,17 +51,17 @@ namespace DjustConnect.PartnerAPI.Client
 
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter)
+        public Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter)
         {
             return GetDarStatusAsync(farmNumberFilter, CancellationToken.None);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<DarStatusDTO[]> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
+        public async Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/DarStatus?PageSize=100&"); // paged result, paging parameters?
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/DarStatus?PageSize=100&");
             urlBuilder_.Append("FarmNumberFilter=").Append(Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
@@ -96,7 +96,15 @@ namespace DjustConnect.PartnerAPI.Client
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             try
                             {
-                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<DarStatusDTO[]>(responseData_);
+
+                                var result_ = new PagedResult<DarStatusDTO> // Verhuizen naar DjustConnectClient als Helper methode?
+                                {
+                                    PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
+                                    Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
+                                    PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
+                                    TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
+                                    Result = Newtonsoft.Json.JsonConvert.DeserializeObject<DarStatusDTO[]>(responseData_)
+                                };
                                 return result_;
                             }
                             catch (Exception exception_)
@@ -165,7 +173,7 @@ namespace DjustConnect.PartnerAPI.Client
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             try
                             {
-                                var result_ = new PagedResult<FarmStatusDTO> // Verhuizen naar DjustConnectClient als Helper methode
+                                var result_ = new PagedResult<FarmStatusDTO>
                                 {
                                     PageNumber = headers_["X-PageNumber"].Select(x=>Convert.ToInt32(x)).Single(),
                                     Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),

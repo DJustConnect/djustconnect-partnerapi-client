@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class DjustConnectClient
+    public class DjustConnectClient //TODO use PagedResult as helper method here
     {
         //TODO How to handle the ACC base url?
         public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";

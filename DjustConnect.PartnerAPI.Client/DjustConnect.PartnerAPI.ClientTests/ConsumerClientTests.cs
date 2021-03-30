@@ -13,7 +13,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
             string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
             string farmNumberFilter = "0262172489";
-            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC) tijdelijk hard coded
+            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
             client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
 
             // Act
@@ -36,7 +36,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
             string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
             string farmNumberFilter = "0262172489";
-            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC) tijdelijk hard coded
+            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
             client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
 
             // Act
