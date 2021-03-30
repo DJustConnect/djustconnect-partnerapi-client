@@ -8,18 +8,10 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class FarmIdTypeDTO : BaseDTO // Doublecheck which properties are necessary
+    public class FarmIdTypeDTO : BaseDTO // Double check with Samuel
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
-
-        [JsonProperty("isDefault", Required = Required.Always)]
-        public bool IsDefault { get; set; }
-
-        [JsonProperty("resourceApis", Required = Required.AllowNull)] // null in results
-        public string ResourceApis { get; set; }
-        [JsonProperty("farmIdMappings", Required = Required.AllowNull)] // null in results
-        public string FarmIdMappings { get; set; }
 
         public static FarmIdTypeDTO FromJson(string data)
         {

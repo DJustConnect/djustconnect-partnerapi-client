@@ -13,7 +13,7 @@ namespace DjustConnect.PartnerAPI.Client
         [JsonProperty("farmNumber", Required = Required.Always)]
         public string FarmNumber { get; set; }
         [JsonProperty("resourceId", Required = Required.Always)]
-        public Guid ResourceId { get; set; }
+        public Guid ResourceId { get; set; } //Guid ipv string op swagger
         [JsonProperty("resourceName", Required = Required.Always)]
         public string ResourceName { get; set; }
         [JsonProperty("farmStatus", Required = Required.Always)]
