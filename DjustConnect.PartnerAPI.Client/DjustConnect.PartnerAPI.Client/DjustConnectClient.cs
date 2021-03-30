@@ -10,7 +10,6 @@ namespace DjustConnect.PartnerAPI.Client
 {
     public class DjustConnectClient //TODO use PagedResult as helper method here
     {
-        //TODO How to handle the ACC base url?
         public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";
         protected HttpClient _httpClient;
 
@@ -26,10 +25,10 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var store = new X509Store("My", StoreLocation.LocalMachine);
             store.Open(OpenFlags.ReadOnly);
-            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false); // !!
+            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false); 
             if (certificates.Count == 0)
             {
-                throw new InvalidOperationException($"Certificate not found for CN=client.ikmnet.be in LocalMachine/My."); // Change to correct CN
+                throw new InvalidOperationException($"Certificate not found for CN=consumercsharp in LocalMachine/My.");
             }
             var certificate = certificates[0];
             //var certificate = new X509Certificate2(session.CertificatePath, session.CertificatePassword, X509KeyStorageFlags.MachineKeySet);
