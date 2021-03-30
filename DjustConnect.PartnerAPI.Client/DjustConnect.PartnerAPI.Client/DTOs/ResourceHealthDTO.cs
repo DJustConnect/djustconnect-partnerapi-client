@@ -14,7 +14,7 @@ namespace DjustConnect.PartnerAPI.Client
         public string ResourceName { get; set; }
 
         [JsonProperty("resourceHealth", Required = Required.Always)]
-        public string ResourceHealth { get; set; } // string? result = "Unknown"
+        public string ResourceHealth { get; set; } // string? result = "Unknown" 
 
         public static ResourceHealthDTO FromJson(string data)
         {
