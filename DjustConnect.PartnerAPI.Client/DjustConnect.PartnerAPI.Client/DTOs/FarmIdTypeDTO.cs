@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class FarmIdTypeResult // Doublecheck which properties are necessary
+    public class FarmIdTypeDTO : BaseDTO // Doublecheck which properties are necessary
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
@@ -20,15 +21,9 @@ namespace DjustConnect.PartnerAPI.Client
         [JsonProperty("farmIdMappings", Required = Required.AllowNull)] // null in results
         public string FarmIdMappings { get; set; }
 
-
-        public string ToJson()
+        public static FarmIdTypeDTO FromJson(string data)
         {
-            return JsonConvert.SerializeObject(this);
-        }
-
-        public static FarmIdTypeResult FromJson(string data)
-        {
-            return JsonConvert.DeserializeObject<FarmIdTypeResult>(data);
+            return JsonConvert.DeserializeObject<FarmIdTypeDTO>(data);
         }
     }
 }

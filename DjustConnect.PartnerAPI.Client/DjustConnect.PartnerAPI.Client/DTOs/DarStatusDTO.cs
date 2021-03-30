@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class DarStatusDTO
+    public class DarStatusDTO : BaseDTO
     {
         [JsonProperty("farmNumber", Required = Required.Always)]
         public string FarmNumber { get; set; }
@@ -22,10 +23,6 @@ namespace DjustConnect.PartnerAPI.Client
         [JsonProperty("darStatus", Required = Required.Always)]
         public string DarStatus { get; set; }
 
-        public string ToJson() // Base class?
-        {
-            return JsonConvert.SerializeObject(this);
-        }
         public static DarStatusDTO FromJson(string data)
         {
             return JsonConvert.DeserializeObject<DarStatusDTO>(data);

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,17 +8,12 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class FarmStatusDTO
+    public class FarmStatusDTO : BaseDTO
     {
         [JsonProperty("farmNumber", Required = Required.Always)]
         public string FarmNumber { get; set; }
         [JsonProperty("status", Required = Required.Always)]
         public string Status { get; set; }
-
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
 
         public static FarmStatusDTO FromJson(string data)
         {

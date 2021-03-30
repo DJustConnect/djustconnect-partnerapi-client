@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class ResourceResult // Doublecheck which properties are necessary
+    public class ResourceDTO : BaseDTO
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
@@ -20,14 +21,9 @@ namespace DjustConnect.PartnerAPI.Client
         //[JsonProperty("type", Required = Required.Always)]
         //public string Type { get; set; } // Enum? "type": "Pull" of "Push"
 
-        public string ToJson()
+        public static ResourceDTO FromJson(string data)
         {
-            return JsonConvert.SerializeObject(this);
-        }
-
-        public static ResourceResult FromJson(string data)
-        {
-            return JsonConvert.DeserializeObject<ResourceResult>(data);
+            return JsonConvert.DeserializeObject<ResourceDTO>(data);
         }
     }
 }
