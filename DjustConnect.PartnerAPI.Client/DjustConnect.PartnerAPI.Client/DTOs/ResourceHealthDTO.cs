@@ -13,12 +13,18 @@ namespace DjustConnect.PartnerAPI.Client
         [JsonProperty("resourceName", Required = Required.Always)]
         public string ResourceName { get; set; }
 
-        [JsonProperty("resourceHealth", Required = Required.Always)]
-        public string ResourceHealth { get; set; } // string? result = "Unknown" 
+        [JsonProperty("resourceHealth", Required = Required.Always)] 
+        public ResourceHealth ResourceHealth { get; set; } 
 
         public static ResourceHealthDTO FromJson(string data)
         {
             return JsonConvert.DeserializeObject<ResourceHealthDTO>(data);
         }
+    }
+    public enum ResourceHealth
+    {
+        Unknown,
+        NOK,
+        OK
     }
 }

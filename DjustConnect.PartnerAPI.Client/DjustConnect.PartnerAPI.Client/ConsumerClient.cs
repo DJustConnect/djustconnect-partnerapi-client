@@ -35,14 +35,14 @@ namespace DjustConnect.PartnerAPI.Client
 
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task <PagedResult<ResourceHealthDTO>>GetResourceHealthAsync(string resourceId) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
+        public Task <ResourceHealthDTO[]> GetResourceHealthAsync(string resourceId) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health //Mag met Guid
         {
             // returns the current health of the resource you have access to
             return GetResourceHealthAsync(resourceId, CancellationToken.None);
         }
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<PagedResult<ResourceHealthDTO>> GetResourceHealthAsync(string resourceId, CancellationToken cancellationToken) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
+        public async Task<ResourceHealthDTO[]> GetResourceHealthAsync(string resourceId, CancellationToken cancellationToken) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Consumer/resource-health?");
@@ -72,23 +72,13 @@ namespace DjustConnect.PartnerAPI.Client
                                 headers_[item_.Key] = item_.Value;
                         }
 
-
-
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             try
                             {
-
-                                var result_ = new PagedResult<ResourceHealthDTO> // Verhuizen naar DjustConnectClient als Helper methode?
-                                {
-                                    PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
-                                    PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
-                                    TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Result = Newtonsoft.Json.JsonConvert.DeserializeObject<ResourceHealthDTO[]>(responseData_)
-                                };
+                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResourceHealthDTO[]>(responseData_);
                                 return result_;
                             }
                             catch (Exception exception_)

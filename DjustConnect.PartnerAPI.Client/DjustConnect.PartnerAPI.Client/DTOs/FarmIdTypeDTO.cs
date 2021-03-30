@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class FarmIdTypeDTO : BaseDTO // Double check with Samuel
+    public class FarmIdTypeDTO : BaseDTO
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }

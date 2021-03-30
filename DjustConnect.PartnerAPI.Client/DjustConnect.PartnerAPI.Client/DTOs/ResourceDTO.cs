@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class ResourceDTO : BaseDTO // Double check AllowNull
+    public class ResourceDTO : BaseDTO
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
@@ -16,7 +16,7 @@ namespace DjustConnect.PartnerAPI.Client
         [JsonProperty("providerApiName", Required = Required.Always)]
         public string ProviderApiName { get; set; }
 
-        [JsonProperty("resourceUrl", Required = Required.AllowNull)] // AllowNull, null bij resultset?
+        [JsonProperty("resourceUrl", Required = Required.AllowNull)]
         public string ResourceUrl { get; set; }
 
         public static ResourceDTO FromJson(string data)
