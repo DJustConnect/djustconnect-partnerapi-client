@@ -93,5 +93,29 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Assert.Equal(okResult.Result[0].ResourceStatus, expectedResourceStatus);
             Assert.Equal(okResult.Result[0].DarStatus, expectedDarStatus);
         }
+        [Fact]
+        public void GetResourceHealthStatus_ReturnsCorrectPaging()
+        {
+            // Arrange
+            string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
+            string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
+            string resourceId = "4fbfa55c-e188-4e35-4089-08d8c2981168"; //c12b085e-92e5-47c6-635a-08d85fc84f9f ceb56085-b760-4d8b-635b-08d85fc84f9f
+            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
+            client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
+
+            // Act
+            var okResult = client.GetResourceHealthAsync(resourceId).Result;
+            var expectedPageNumber = 1;
+            var expectedTotalCount = 1;
+            var expectedPageSize = 10;
+
+
+            // Assert
+            Assert.NotNull(okResult);
+            Assert.Equal(okResult.PageNumber, expectedPageNumber);
+            Assert.Equal(okResult.TotalCount, expectedTotalCount);
+            Assert.Equal(okResult.PageSize, expectedPageSize);
+        }
+
     }
 }
