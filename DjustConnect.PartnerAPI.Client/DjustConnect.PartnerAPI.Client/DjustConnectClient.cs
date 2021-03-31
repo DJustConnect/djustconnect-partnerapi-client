@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -38,6 +39,10 @@ namespace DjustConnect.PartnerAPI.Client
             var http = new HttpClient(clientHandler);
             http.DefaultRequestHeaders.Add("DjustConnect-Subscription-Key", subscriptionkey);
             return http;
+        }
+        public static void AddPaging()
+        {
+            // Add paging to a DTO
         }
     }
 }
