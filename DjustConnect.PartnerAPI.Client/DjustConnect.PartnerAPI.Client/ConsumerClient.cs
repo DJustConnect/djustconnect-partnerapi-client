@@ -20,14 +20,81 @@ namespace DjustConnect.PartnerAPI.Client
             _httpClient = DjustConnectClient.CreateHttpClient(thumbprint, subscriptionkey);
         }
 
-      
-        public Task GetFarmIdTypesAsync() // api/FarmIdType - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmIdType
-        {
-            return null; // returns a list/array of all FarmIdTypes
-        }
+
+       
+
         public Task GetFarmMappingAsync() // api/FarmMapping - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmMapping
         {
             return null; // returns farm mapping - 415 Unsupported Media Type
+        }
+
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmIdType
+        {
+            return GetFarmIdTypesAsync(CancellationToken.None);
+        }
+
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        public async Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmIdType");
+
+            var client_ = _httpClient;
+            try
+            {
+                using (var request_ = new HttpRequestMessage())
+                {
+                    request_.Method = new HttpMethod("GET");
+                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+
+
+                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "200")
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            try
+                            {
+                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmIdTypeDTO[]>(responseData_);
+                                return result_;
+                            }
+                            catch (Exception exception_)
+                            {
+                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                            }
+                        }
+                        else if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                        }
+                        return null;
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+            }
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -36,6 +103,8 @@ namespace DjustConnect.PartnerAPI.Client
             return GetResourcesAsync(CancellationToken.None);
         }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<ResourceDTO[]> GetResourcesAsync(CancellationToken cancellationToken) // api/Resource - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Resource
         {
             var urlBuilder_ = new StringBuilder();
@@ -99,7 +168,7 @@ namespace DjustConnect.PartnerAPI.Client
 
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task <ResourceHealthDTO[]> GetResourceHealthAsync(string resourceId) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health //Mag met Guid
+        public Task<ResourceHealthDTO[]> GetResourceHealthAsync(string resourceId) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health //Mag met Guid
         {
             // returns the current health of the resource you have access to
             return GetResourceHealthAsync(resourceId, CancellationToken.None);
@@ -308,7 +377,7 @@ namespace DjustConnect.PartnerAPI.Client
                             {
                                 var result_ = new PagedResult<FarmStatusDTO>
                                 {
-                                    PageNumber = headers_["X-PageNumber"].Select(x=>Convert.ToInt32(x)).Single(),
+                                    PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
                                     Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
                                     PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
                                     TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
