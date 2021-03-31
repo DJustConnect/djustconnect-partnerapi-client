@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace DjustConnect.PartnerAPI.Client.Interfaces
 {
-    public interface IConsumerClient
+    public interface IConsumerClient // generic method with type constraint where T : ?
     {
         Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter);
         Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);

@@ -99,7 +99,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Arrange
             string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
             string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
-            string resourceId = "4fbfa55c-e188-4e35-4089-08d8c2981168"; //c12b085e-92e5-47c6-635a-08d85fc84f9f ceb56085-b760-4d8b-635b-08d85fc84f9f
+            Guid? resourceId = Guid.Parse("4fbfa55c-e188-4e35-4089-08d8c2981168"); //c12b085e-92e5-47c6-635a-08d85fc84f9f ceb56085-b760-4d8b-635b-08d85fc84f9f
             var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
             client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
 
@@ -116,7 +116,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Arrange
             string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
             string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
-            string resourceId = "4fbfa55c-e188-4e35-4089-08d8c2981168"; //c12b085e-92e5-47c6-635a-08d85fc84f9f ceb56085-b760-4d8b-635b-08d85fc84f9f
+            Guid? resourceId = Guid.Parse("4fbfa55c-e188-4e35-4089-08d8c2981168"); //c12b085e-92e5-47c6-635a-08d85fc84f9f ceb56085-b760-4d8b-635b-08d85fc84f9f
             var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
             client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
 
@@ -141,6 +141,22 @@ namespace DjustConnect.PartnerAPI.ClientTests
 
             // Act
             var okResult = client.GetResourcesAsync().Result;
+
+            // Assert
+            Assert.NotNull(okResult);
+        }
+
+        [Fact]
+        public void GetFarmIdTypes_ReturnsNotNull()
+        {
+            // Arrange
+            string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
+            string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
+            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
+            client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
+
+            // Act
+            var okResult = client.GetFarmIdTypesAsync().Result;
 
             // Assert
             Assert.NotNull(okResult);

@@ -12,6 +12,7 @@ namespace DjustConnect.PartnerAPI.Client
 {
     public class ConsumerClient : DjustConnectClient, IConsumerClient
     {
+        #region Constructors
         public ConsumerClient(HttpClient httpClient) : base(httpClient)
         {
         }
@@ -19,23 +20,30 @@ namespace DjustConnect.PartnerAPI.Client
         {
             _httpClient = DjustConnectClient.CreateHttpClient(thumbprint, subscriptionkey);
         }
+        #endregion
 
+        /* TODO first next step(s):
 
-       
+       api/RarStatus
+       api/ConsumerAccess - GET
+       api/ConsumerAccess - POST
 
-        public Task GetFarmMappingAsync() // api/FarmMapping - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmMapping
+       api/Consumer/push - GET
+       api/Consumer/push/activate - POST
+       api/Consumer/push/deactivate - POST
+   */
+
+        public Task GetFarmMappingAsync() // api/FarmMapping
         {
             return null; // returns farm mapping - 415 Unsupported Media Type
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/FarmIdType
+        public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType
         {
             return GetFarmIdTypesAsync(CancellationToken.None);
         }
 
-        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
@@ -98,14 +106,14 @@ namespace DjustConnect.PartnerAPI.Client
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<ResourceDTO[]> GetResourcesAsync() // api/Resource - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Resource
+        public Task<ResourceDTO[]> GetResourcesAsync() // api/Resource
         {
             return GetResourcesAsync(CancellationToken.None);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<ResourceDTO[]> GetResourcesAsync(CancellationToken cancellationToken) // api/Resource - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Resource
+        public async Task<ResourceDTO[]> GetResourcesAsync(CancellationToken cancellationToken) // api/Resource
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Resource");
@@ -168,14 +176,14 @@ namespace DjustConnect.PartnerAPI.Client
 
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<ResourceHealthDTO[]> GetResourceHealthAsync(string resourceId) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health //Mag met Guid
+        public Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId) // api/Consumer/resource-health -- Guid
         {
             // returns the current health of the resource you have access to
             return GetResourceHealthAsync(resourceId, CancellationToken.None);
         }
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<ResourceHealthDTO[]> GetResourceHealthAsync(string resourceId, CancellationToken cancellationToken) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
+        public async Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId, CancellationToken cancellationToken) // api/Consumer/resource-health - requestURL: https://partnerapi.acc.djustconnect.cegeka.com/api/Consumer/resource-health
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Consumer/resource-health?");
@@ -240,16 +248,7 @@ namespace DjustConnect.PartnerAPI.Client
 
 
 
-        /* TODO first next step(s):
-			
-			api/RarStatus
-			api/ConsumerAccess - GET
-			api/ConsumerAccess - POST
-			
-			api/Consumer/push - GET
-			api/Consumer/push/activate - POST
-			api/Consumer/push/deactivate - POST
-		*/
+   
 
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -408,7 +407,7 @@ namespace DjustConnect.PartnerAPI.Client
             {
             }
         }
-
+        #region Converters
         private string ConvertToString(object value, System.Globalization.CultureInfo cultureInfo)
         {
             if (value is Enum)
@@ -444,5 +443,6 @@ namespace DjustConnect.PartnerAPI.Client
 
             return Convert.ToString(value, cultureInfo);
         }
+        #endregion
     }
 }
