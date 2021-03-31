@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client.DTOs
 {
-    public class RarStatusDTO
+    public class RarStatusDTO: BaseDTO
     {
         [JsonProperty("partnerName", Required = Required.Always)]
         public string PartnerName { get; set; }
@@ -20,5 +20,9 @@ namespace DjustConnect.PartnerAPI.Client.DTOs
         [JsonProperty("status", Required = Required.Always)]
         public string Status { get; set; }
 
+        public static RarStatusDTO FromJson(string data)
+        {
+            return JsonConvert.DeserializeObject<RarStatusDTO>(data);
+        }
     }
 }
