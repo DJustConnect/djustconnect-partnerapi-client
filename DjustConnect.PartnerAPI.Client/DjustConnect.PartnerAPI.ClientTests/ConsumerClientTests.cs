@@ -161,5 +161,21 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Assert
             Assert.NotNull(okResult);
         }
+        [Fact]
+        public void GetRarStatus_ReturnsNotNull()
+        {
+            // Arrange
+            string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
+            string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
+            string resourceNameFilter = "prov-2-test";
+            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
+            client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
+
+            // Act
+            var okResult = client.GetRarStatusAsync(resourceNameFilter).Result;
+
+            // Assert
+            Assert.NotNull(okResult);
+        }
     }
 }

@@ -23,16 +23,14 @@ namespace DjustConnect.PartnerAPI.Client
         }
         #endregion
 
-        /* TODO first next step(s):
+       //TODO first next step(s):
+       
+       //api/ConsumerAccess - GET
+       //api/ConsumerAccess - POST
 
-       api/RarStatus
-       api/ConsumerAccess - GET
-       api/ConsumerAccess - POST
-
-       api/Consumer/push - GET
-       api/Consumer/push/activate - POST
-       api/Consumer/push/deactivate - POST
-   */
+       //api/Consumer/push - GET
+       //api/Consumer/push/activate - POST
+       //api/Consumer/push/deactivate - POST
 
         public Task GetFarmMappingAsync() // api/FarmMapping
         {
@@ -247,21 +245,19 @@ namespace DjustConnect.PartnerAPI.Client
             }
         }
 
-
-
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string farmNumberFilter)
+        public Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter)
         {
-            return GetRarStatusAsync(farmNumberFilter, CancellationToken.None);
+            return GetRarStatusAsync(resourceNameFilter, CancellationToken.None);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
+        public async Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/RarStatus?PageSize=100&");
-            urlBuilder_.Append("FarmNumberFilter=").Append(Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/RarStatus?");
+            urlBuilder_.Append("resourceNameFilter=").Append(Uri.EscapeDataString(resourceNameFilter != null ? ConvertToString(resourceNameFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
             var client_ = _httpClient;

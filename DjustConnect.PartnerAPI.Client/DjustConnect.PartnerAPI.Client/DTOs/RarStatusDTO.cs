@@ -9,7 +9,7 @@ namespace DjustConnect.PartnerAPI.Client.DTOs
 {
     public class RarStatusDTO: BaseDTO
     {
-        [JsonProperty("partnerName", Required = Required.Always)]
+        [JsonProperty("partnerName", Required = Required.AllowNull)]
         public string PartnerName { get; set; }
         [JsonProperty("resourceName", Required = Required.Always)]
         public string ResourceName { get; set; }
