@@ -7,6 +7,7 @@ using System.Threading;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using DjustConnect.PartnerAPI.Client.Interfaces;
+using DjustConnect.PartnerAPI.Client.DTOs;
 
 namespace DjustConnect.PartnerAPI.Client
 {
@@ -248,8 +249,86 @@ namespace DjustConnect.PartnerAPI.Client
 
 
 
-   
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        public Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string farmNumberFilter)
+        {
+            return GetRarStatusAsync(farmNumberFilter, CancellationToken.None);
+        }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        public async Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/RarStatus?PageSize=100&");
+            urlBuilder_.Append("FarmNumberFilter=").Append(Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
+            urlBuilder_.Length--;
+
+            var client_ = _httpClient;
+            try
+            {
+                using (var request_ = new HttpRequestMessage())
+                {
+                    request_.Method = new HttpMethod("GET");
+                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+
+
+                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+
+
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "200")
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            try
+                            {
+
+                                var result_ = new PagedResult<RarStatusDTO>
+                                {
+                                    PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
+                                    Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
+                                    PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
+                                    TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
+                                    Result = Newtonsoft.Json.JsonConvert.DeserializeObject<RarStatusDTO[]>(responseData_)
+                                };
+                                return result_;
+                            }
+                            catch (Exception exception_)
+                            {
+                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+                            }
+                        }
+                        else if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+                        }
+                        return null;
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+            }
+        }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter)
