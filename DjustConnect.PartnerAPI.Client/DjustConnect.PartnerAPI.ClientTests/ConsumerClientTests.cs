@@ -6,6 +6,15 @@ namespace DjustConnect.PartnerAPI.ClientTests
 {
     public class ConsumerClientTests // Optimaliseer dmv fixtures zodat je niet teveel code herhaalt voor elke test
     {
+        private ConsumerClient BuildClient()
+        {
+            string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
+            string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
+            var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
+            client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
+            return client;
+        }
+
         [Fact]
         public void GetFarmStatus_ReturnsCorrectPaging()
         {
@@ -17,7 +26,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
 
             // Act
-            var okResult = client.GetFarmStatusAsync(farmNumberFilter).Result;
+            var okResult = BuildClient().GetFarmStatusAsync(farmNumberFilter).Result;
             var expectedPageNumber = 1;
             var expectedTotalCount = 1;
             var expectedPageSize = 10;
