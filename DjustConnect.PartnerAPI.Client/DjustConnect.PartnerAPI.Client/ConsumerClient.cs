@@ -33,6 +33,11 @@ namespace DjustConnect.PartnerAPI.Client
         }
         #endregion
 
+        //public Task<ConsumerAccessDTO[]> GetConsumerAccessAsync()
+        //{
+        //    return GetConsumerAccessAsync(CancellationToken.None);
+        //}
+
         public Task GetFarmMappingAsync() // api/FarmMapping 
         {
             return null; // returns farm mapping - 415 Unsupported Media Type
