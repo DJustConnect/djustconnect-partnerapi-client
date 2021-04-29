@@ -12,7 +12,7 @@ using DjustConnect.PartnerAPI.Client.DTOs;
 namespace DjustConnect.PartnerAPI.Client
 {
 
-    //TODO first next step(s):
+    //TODO
 
     //api/ConsumerAccess - GET
     //api/ConsumerAccess - POST
@@ -37,6 +37,8 @@ namespace DjustConnect.PartnerAPI.Client
         {
             return null; // returns farm mapping - 415 Unsupported Media Type
         }
+
+
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType
