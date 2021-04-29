@@ -44,5 +44,18 @@ namespace DjustConnect.PartnerAPI.Client
         {
             // Add paging to a DTO
         }
+
+        public static PagedResult<T> GetPagedResult<T>(Dictionary<string, IEnumerable<string>> headers, T[] result)
+        {
+            return new PagedResult<T>
+            {
+                PageNumber = headers["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
+                Pages = headers["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
+                PageSize = headers["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
+                TotalCount = headers["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
+                Result = result
+            };
+        }
+
     }
 }
