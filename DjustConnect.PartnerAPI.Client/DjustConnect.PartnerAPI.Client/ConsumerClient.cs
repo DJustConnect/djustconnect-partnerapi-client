@@ -11,6 +11,16 @@ using DjustConnect.PartnerAPI.Client.DTOs;
 
 namespace DjustConnect.PartnerAPI.Client
 {
+
+    //TODO first next step(s):
+
+    //api/ConsumerAccess - GET
+    //api/ConsumerAccess - POST
+
+    //api/Consumer/push - GET
+    //api/Consumer/push/activate - POST
+    //api/Consumer/push/deactivate - POST
+
     public class ConsumerClient : DjustConnectClient, IConsumerClient
     {
         #region Constructors
@@ -22,15 +32,6 @@ namespace DjustConnect.PartnerAPI.Client
             _httpClient = DjustConnectClient.CreateHttpClient(thumbprint, subscriptionkey);
         }
         #endregion
-
-       //TODO first next step(s):
-       
-       //api/ConsumerAccess - GET
-       //api/ConsumerAccess - POST
-
-       //api/Consumer/push - GET
-       //api/Consumer/push/activate - POST
-       //api/Consumer/push/deactivate - POST
 
         public Task GetFarmMappingAsync() // api/FarmMapping 
         {
