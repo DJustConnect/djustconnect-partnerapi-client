@@ -32,7 +32,7 @@ namespace DjustConnect.PartnerAPI.Client
        //api/Consumer/push/activate - POST
        //api/Consumer/push/deactivate - POST
 
-        public Task GetFarmMappingAsync() // api/FarmMapping
+        public Task GetFarmMappingAsync() // api/FarmMapping 
         {
             return null; // returns farm mapping - 415 Unsupported Media Type
         }
