@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class DjustConnectClient //TODO use PagedResult as helper method here
+    public class DjustConnectClient 
     {
         public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";
         protected HttpClient _httpClient;
@@ -44,10 +44,9 @@ namespace DjustConnect.PartnerAPI.Client
         }
         public static void AddPaging()
         {
-            // Add paging to a DTO
         }
 
-        public static PagedResult<T> GetPagedResult<T>(Dictionary<string, IEnumerable<string>> headers, T[] result)
+        public static PagedResult<T> GetPagedResult<T>(Dictionary<string, IEnumerable<string>> headers, string json)
         {
             return new PagedResult<T>
             {
@@ -55,7 +54,7 @@ namespace DjustConnect.PartnerAPI.Client
                 Pages = headers["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
                 PageSize = headers["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
                 TotalCount = headers["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
-                Result = result
+                Result = Newtonsoft.Json.JsonConvert.DeserializeObject<T[]>(json)
             };
         }
 
@@ -82,54 +81,12 @@ namespace DjustConnect.PartnerAPI.Client
             return request;
         }
 
-        protected async Task<PagedResult<T>> CallAPI<T>(StringBuilder urlBuilder, Func<string, T[]> getResult, CancellationToken cancellationToken)
+        protected async Task<PagedResult<T>> CallAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken)
         {
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = GetRequestMessage(urlBuilder))
-                {
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = response_.GetResponseHeaders();
-                        // TODO var status = response_.GetStatusCode();
-                        //var headers_ = GetResponseHeaders(response_);
-
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            try
-                            {
-                                var result_ = GetPagedResult<T>(headers_, getResult(responseData_));
-                                return result_;
-                            }
-                            catch (Exception exception_)
-                            {
-                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
-                        }
-                        else if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                        return null;
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
+            return await CallAPI(urlBuilder, GetPagedResult<T>, cancellationToken);
         }
 
-        protected async Task<T> CallAPI2<T>(StringBuilder urlBuilder, Func<Dictionary<string, IEnumerable<string>>, string, T> getResult, CancellationToken cancellationToken)
+        protected async Task<T> CallAPI<T>(StringBuilder urlBuilder, Func<Dictionary<string, IEnumerable<string>>, string, T> getResult, CancellationToken cancellationToken) where T : class
         {
             var client_ = _httpClient;
             try

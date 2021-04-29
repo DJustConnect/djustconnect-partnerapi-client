@@ -4,7 +4,7 @@ using Xunit;
 
 namespace DjustConnect.PartnerAPI.ClientTests
 {
-    public class ConsumerClientTests // Optimaliseer dmv fixtures zodat je niet teveel code herhaalt voor elke test
+    public class ConsumerClientTests 
     {
         private ConsumerClient BuildClient()
         {
