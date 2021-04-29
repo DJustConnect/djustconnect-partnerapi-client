@@ -57,5 +57,16 @@ namespace DjustConnect.PartnerAPI.Client
             };
         }
 
+        protected static Dictionary<string, IEnumerable<string>> GetResponseHeaders(HttpResponseMessage response_)
+        {
+            var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+            if (response_.Content != null && response_.Content.Headers != null)
+            {
+                foreach (var item_ in response_.Content.Headers)
+                    headers_[item_.Key] = item_.Value;
+            }
+            return headers_;
+        }
+
     }
 }
