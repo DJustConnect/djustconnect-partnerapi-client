@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using DjustConnect.PartnerAPI.Client.Interfaces;
 using DjustConnect.PartnerAPI.Client.DTOs;
+using DjustConnect.PartnerAPI.Client.Filters;
 
 namespace DjustConnect.PartnerAPI.Client
 {
@@ -253,6 +254,71 @@ namespace DjustConnect.PartnerAPI.Client
             }
         }
 
+        ///// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        //public Task<PagedResult<RarStatusDTO>> GetRarStatusAsyncWithFilter(RarStatusFilter filter)
+        //{
+        //    return GetRarStatusAsync(filter, CancellationToken.None);
+        //}
+
+        //public async Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(RarStatusFilter filter, CancellationToken cancellationToken)
+        //{
+        //    var urlBuilder_ = new StringBuilder();
+        //    urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/RarStatus?");
+        //    UrlAppend(urlBuilder_, "resourceNameFilter", filter.ResourceName);
+        //    UrlAppend(urlBuilder_, "statusFilter", filter.Status);
+        //    // TODO add other filters
+        //    urlBuilder_.Length--;
+
+        //    return await CallAPI(urlBuilder_, (responseData_) => Newtonsoft.Json.JsonConvert.DeserializeObject<RarStatusDTO[]>(responseData_), cancellationToken);
+        //    return await CallAPI2(urlBuilder_, (headers, responseData) => GetPagedResult(headers, Newtonsoft.Json.JsonConvert.DeserializeObject<RarStatusDTO[]>(responseData)), cancellationToken);
+
+        //    var client_ = _httpClient;
+        //    try
+        //    {
+        //        using (var request_ = GetRequestMessage(urlBuilder_))
+        //        {
+        //            var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        //            try
+        //            {
+        //                var headers_ = response_.GetResponseHeaders();
+        //                // TODO var status = response_.GetStatusCode();
+        //                //var headers_ = GetResponseHeaders(response_);
+
+        //                var status_ = ((int)response_.StatusCode).ToString();
+        //                if (status_ == "200")
+        //                {
+        //                    var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //                    try
+        //                    {
+        //                        var rarstatus = Newtonsoft.Json.JsonConvert.DeserializeObject<RarStatusDTO[]>(responseData_);
+        //                        var result_ = GetPagedResult(headers_, rarstatus);
+        //                        return result_;
+        //                    }
+        //                    catch (Exception exception_)
+        //                    {
+        //                        throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+        //                    }
+        //                }
+        //                else if (status_ != "200" && status_ != "204")
+        //                {
+        //                    var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //                    throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+        //                }
+        //                return null;
+        //            }
+        //            finally
+        //            {
+        //                if (response_ != null)
+        //                    response_.Dispose();
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //    }
+        //}
+
+
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter)
         {
@@ -490,7 +556,7 @@ namespace DjustConnect.PartnerAPI.Client
             {
             }
         }
-        #region Converters
+        #region Helpers
         private string ConvertToString(object value, System.Globalization.CultureInfo cultureInfo)
         {
             if (value is Enum)
@@ -526,6 +592,21 @@ namespace DjustConnect.PartnerAPI.Client
 
             return Convert.ToString(value, cultureInfo);
         }
+
+        public void UrlAppendPaging(StringBuilder urlBuilder, PagingFilter filter)
+        {
+            if (filter.PageSize != null)
+                urlBuilder.Append($"PageSize=").Append(Uri.EscapeDataString(ConvertToString(filter.PageSize.Value, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+        }
+
+        public void UrlAppend(StringBuilder urlBuilder, string parameterName, string parameter)
+        {
+            if (!string.IsNullOrEmpty(parameter))
+                urlBuilder.Append($"{parameterName}=").Append(Uri.EscapeDataString(parameter)).Append("&");
+        }
+
+
+
         #endregion
     }
 }
