@@ -34,10 +34,19 @@ namespace DjustConnect.PartnerAPI.Client
         }
         #endregion
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        public Task GetFarmMappingAsync() // api/FarmMapping 
+        {
+            return null; // returns farm mapping - 415 Unsupported Media Type
+        }
+
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<PagedResult<ConsumerAccessDTO[]>> GetConsumerAccessAsync()
         {
             return GetConsumerAccessAsync(CancellationToken.None);
         }
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<PagedResult<ConsumerAccessDTO[]>> GetConsumerAccessAsync(CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
@@ -46,20 +55,14 @@ namespace DjustConnect.PartnerAPI.Client
             return await CallAPI<ConsumerAccessDTO[]>(urlBuilder_, cancellationToken);
         }
 
-
-        public Task GetFarmMappingAsync() // api/FarmMapping 
-        {
-            return null; // returns farm mapping - 415 Unsupported Media Type
-        }
-
-
-
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType
         {
             return GetFarmIdTypesAsync(CancellationToken.None);
         }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
