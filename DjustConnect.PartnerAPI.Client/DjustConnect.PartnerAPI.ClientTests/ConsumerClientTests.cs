@@ -150,10 +150,36 @@ namespace DjustConnect.PartnerAPI.ClientTests
         {
             // Arrange
             RarStatusFilter filter = new RarStatusFilter();
+            string resourceName = "prov-2-test";
+
+            // Act
+            var okResult = BuildClient().GetRarStatusAsync(resourceName).Result;
+
+            // Assert
+            Assert.NotNull(okResult);
+        }
+        [Fact]
+        public void GetRarStatusWithFilter_ReturnsNotNull()
+        {
+            // Arrange
+            RarStatusFilter filter = new RarStatusFilter();
             filter.ResourceName = "prov-2-test";
 
             // Act
-            var okResult = BuildClient().GetRarStatusAsync(filter, CancellationToken.None).Result;
+            var okResult = BuildClient().GetRarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
+
+            // Assert
+            Assert.NotNull(okResult);
+        }
+        [Fact]
+        public void GetDarStatusWithFilter_ReturnsNotNull()
+        {
+            // Arrange
+            DarStatusFilter filter = new DarStatusFilter();
+            filter.ResourceName = "prov-2-test";
+
+            // Act
+            var okResult = BuildClient().GetDarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
 
             // Assert
             Assert.NotNull(okResult);
