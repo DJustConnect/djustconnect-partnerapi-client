@@ -401,7 +401,7 @@ namespace DjustConnect.PartnerAPI.Client
                             try
                             {
 
-                                var result_ = new PagedResult<DarStatusDTO> // Verhuizen naar DjustConnectClient als Helper methode?
+                                var result_ = new PagedResult<DarStatusDTO> 
                                 {
                                     PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
                                     Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
