@@ -430,7 +430,8 @@ namespace DjustConnect.PartnerAPI.Client
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmStatus?");
             UrlAppend(urlBuilder_, "farmNumberFilter", filter.FarmNumber);
-            UrlAppend(urlBuilder_, "statusFilter", filter.Status);
+            UrlAppend(urlBuilder_, "statusFilter", filter.Status.ToString());
+            // TODO Add Sort
             urlBuilder_.Length--;
 
             return await CallPagedAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);

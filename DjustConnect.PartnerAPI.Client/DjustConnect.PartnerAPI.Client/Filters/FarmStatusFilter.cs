@@ -12,7 +12,20 @@ namespace DjustConnect.PartnerAPI.Client.Filters
         {
         }
         public string FarmNumber { get; set; }
-        public string Status { get; set; } // TODO enum
-        public string Sort { get; set; } // hoe toe te passen?
+        public Status Status { get; set; } 
+        public Sort Sort { get; set; }
+    }
+    public enum Status
+    {
+        HasUser,
+        NotFound,
+        HasNoUser
+    }
+    public enum Sort
+    {
+        PartnerName, 
+        PartnerId,
+        FarmNumber, 
+        Status
     }
 }

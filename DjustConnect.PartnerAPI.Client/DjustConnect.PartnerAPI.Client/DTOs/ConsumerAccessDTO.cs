@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client.DTOs
 {
-    public class ConsumerAccessDTO //ConsumerAccess.cs
+    public class ConsumerAccessDTO : BaseDTO //ConsumerAccess.cs
     {
         //public Guid PartnerId { get; set; }
         //public DateTime? AccessUntil { get; set; }
@@ -17,5 +18,10 @@ namespace DjustConnect.PartnerAPI.Client.DTOs
         //public virtual DataPartner Partner { get; set; }
         //public virtual FarmIdType FarmIdType { get; set; }
         //public virtual ICollection<ResourceAccessRequest> ResourceAccessRequests { get; set; }
+
+        public static ConsumerAccessDTO FromJson(string data)
+        {
+            return JsonConvert.DeserializeObject<ConsumerAccessDTO>(data);
+        }
     }
 }
