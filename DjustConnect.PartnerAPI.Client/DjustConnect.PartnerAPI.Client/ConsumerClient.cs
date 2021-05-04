@@ -184,7 +184,7 @@ namespace DjustConnect.PartnerAPI.Client
 
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId) // api/Consumer/resource-health -- Guid
+        public Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId) // api/Consumer/resource-health
         {
             // returns the current health of the resource you have access to
             return GetResourceHealthAsync(resourceId, CancellationToken.None);
