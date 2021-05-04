@@ -10,10 +10,9 @@ namespace DjustConnect.PartnerAPI.Client.Filters
     {
         public FarmStatusFilter(string status = null)
         {
-
         }
         public string FarmNumber { get; set; }
         public string Status { get; set; } // TODO enum
-        public string Sort { get; set; }
+        public string Sort { get; set; } // hoe toe te passen?
     }
 }

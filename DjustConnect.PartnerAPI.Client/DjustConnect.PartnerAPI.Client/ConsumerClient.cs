@@ -455,22 +455,21 @@ namespace DjustConnect.PartnerAPI.Client
             }
         }
 
-        //public Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter)
-        //{
-        //    return GetFarmStatusAsyncWithFilter(filter, CancellationToken.None);
-        //}
+        public Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter)
+        {
+            return GetFarmStatusAsyncWithFilter(filter, CancellationToken.None);
+        }
 
-        //public async Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter, CancellationToken cancellationToken)
-        //{
-        //    var urlBuilder_ = new StringBuilder();
-        //    urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarStatus?");
-        //    UrlAppend(urlBuilder_, "resourceNameFilter", filter.ResourceName);
-        //    UrlAppend(urlBuilder_, "statusFilter", filter.Status);
-        //    UrlAppend(urlBuilder_, "apiNameFilter", filter.ApiName);
-        //    urlBuilder_.Length--;
+        public async Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter, CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmStatus?");
+            UrlAppend(urlBuilder_, "farmNumberFilter", filter.FarmNumber);
+            UrlAppend(urlBuilder_, "statusFilter", filter.Status);
+            urlBuilder_.Length--;
 
-        //    return await CallAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);
-        //}
+            return await CallAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);
+        }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter)
