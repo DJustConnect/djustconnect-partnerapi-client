@@ -266,12 +266,32 @@ namespace DjustConnect.PartnerAPI.Client
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/RarStatus?");
             UrlAppend(urlBuilder_, "resourceNameFilter", filter.ResourceName);
             UrlAppend(urlBuilder_, "statusFilter", filter.Status);
-            // TODO add other filters
+            UrlAppend(urlBuilder_, "apiNameFilter", filter.ApiName);
             urlBuilder_.Length--;
 
             return await CallAPI<RarStatusDTO>(urlBuilder_, cancellationToken);
         }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        public Task<PagedResult<DarStatusDTO>> GetDarStatusAsyncWithFilter(DarStatusFilter filter)
+        {
+            return GetDarStatusAsync(filter, CancellationToken.None);
+        }
+
+        public async Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(DarStatusFilter filter, CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/DarStatus?");
+            UrlAppend(urlBuilder_, "farmNumberFilter", filter.FarmNumber);
+            UrlAppend(urlBuilder_, "resourceNameFilter", filter.ResourceName);
+            UrlAppend(urlBuilder_, "resourceIdFilter", filter.ResourceId.ToString());
+            UrlAppend(urlBuilder_, "farmStatusFilter", filter.FarmStatus);
+            UrlAppend(urlBuilder_, "resourceStatusFilter", filter.ResourceStatus);
+            UrlAppend(urlBuilder_, "darStatusFilter", filter.DarStatus);
+            urlBuilder_.Length--;
+
+            return await CallAPI<DarStatusDTO>(urlBuilder_, cancellationToken);
+        }
 
         ///// <exception cref="DjustConnectException">A server side error occurred.</exception>
         //public Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter)
