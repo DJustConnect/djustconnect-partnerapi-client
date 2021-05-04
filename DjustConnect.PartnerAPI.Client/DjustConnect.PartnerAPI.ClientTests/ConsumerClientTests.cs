@@ -184,5 +184,18 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Assert
             Assert.NotNull(okResult);
         }
+        [Fact]
+        public void GetFarmStatusWithFilter_ReturnsNotNull()
+        {
+            // Arrange
+            FarmStatusFilter filter = new FarmStatusFilter();
+            filter.FarmNumber = "0262172489";
+
+            // Act
+            var okResult = BuildClient().GetFarmStatusAsyncWithFilter(filter, CancellationToken.None).Result;
+
+            // Assert
+            Assert.NotNull(okResult);
+        }
     }
 }
