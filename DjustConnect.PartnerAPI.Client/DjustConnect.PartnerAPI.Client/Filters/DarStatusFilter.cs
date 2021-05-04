@@ -15,9 +15,9 @@ namespace DjustConnect.PartnerAPI.Client.Filters
         public string FarmNumber { get; set; }
         public Guid? ResourceId { get; set; }
         public string ResourceName { get; set; }
-        public string FarmStatus { get; set; }
-        public string ResourceStatus { get; set; }
-        public string DarStatus { get; set; }
+        public string FarmStatus { get; set; } // TODO enum
+        public string ResourceStatus { get; set; } // TODO enum
+        public string DarStatus { get; set; } // TODO enum
 
     }
 }
