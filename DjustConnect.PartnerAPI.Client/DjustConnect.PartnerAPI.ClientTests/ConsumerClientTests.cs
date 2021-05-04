@@ -14,6 +14,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
         // GetRarStatus
         // GetDarStatus
         // GetFarmStatus
+        // ConsumerAccess GET -> POST -> GET testen of de data wel degelijk correct wordt opgeslagen
         private ConsumerClient BuildClient()
         {
             string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";

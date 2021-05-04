@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DjustConnect.PartnerAPI.Client.DTOs
+namespace DjustConnect.PartnerAPI.Client
 {
     public class BaseDTO
     {

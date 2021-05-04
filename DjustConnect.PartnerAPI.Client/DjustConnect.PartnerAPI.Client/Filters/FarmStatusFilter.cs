@@ -12,10 +12,10 @@ namespace DjustConnect.PartnerAPI.Client.Filters
         {
         }
         public string FarmNumber { get; set; }
-        public Status Status { get; set; } 
+        public FarmStatus Status { get; set; } 
         public Sort Sort { get; set; }
     }
-    public enum Status
+    public enum FarmStatus
     {
         HasUser,
         NotFound,

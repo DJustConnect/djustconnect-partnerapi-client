@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client.DTOs
 {
-    public class ConsumerAccessDTO : BaseDTO //ConsumerAccess.cs
+    public class ConsumerAccessDTO : BaseDTO 
     {
         //public Guid PartnerId { get; set; }
         //public DateTime? AccessUntil { get; set; }
