@@ -41,18 +41,18 @@ namespace DjustConnect.PartnerAPI.Client
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<PagedResult<ConsumerAccessDTO[]>> GetConsumerAccessAsync()
+        public Task<ConsumerAccessDTO> GetConsumerAccessAsync()
         {
             return GetConsumerAccessAsync(CancellationToken.None);
         }
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<PagedResult<ConsumerAccessDTO[]>> GetConsumerAccessAsync(CancellationToken cancellationToken)
+        public async Task<ConsumerAccessDTO> GetConsumerAccessAsync(CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
 
-            return await CallAPI<ConsumerAccessDTO[]>(urlBuilder_, cancellationToken);
+            return await CallAPI<ConsumerAccessDTO>(urlBuilder_, GetResult<ConsumerAccessDTO>,cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -68,7 +68,7 @@ namespace DjustConnect.PartnerAPI.Client
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmIdType");
 
-            return await CallAPI<FarmIdTypeDTO[]>(urlBuilder_, cancellationToken);
+            return await CallPagedAPI<FarmIdTypeDTO[]>(urlBuilder_, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -229,7 +229,7 @@ namespace DjustConnect.PartnerAPI.Client
             UrlAppend(urlBuilder_, "apiNameFilter", filter.ApiName);
             urlBuilder_.Length--;
 
-            return await CallAPI<RarStatusDTO>(urlBuilder_, cancellationToken);
+            return await CallPagedAPI<RarStatusDTO>(urlBuilder_, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -252,7 +252,7 @@ namespace DjustConnect.PartnerAPI.Client
             UrlAppend(urlBuilder_, "darStatusFilter", filter.DarStatus);
             urlBuilder_.Length--;
 
-            return await CallAPI<DarStatusDTO>(urlBuilder_, cancellationToken);
+            return await CallPagedAPI<DarStatusDTO>(urlBuilder_, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -433,7 +433,7 @@ namespace DjustConnect.PartnerAPI.Client
             UrlAppend(urlBuilder_, "statusFilter", filter.Status);
             urlBuilder_.Length--;
 
-            return await CallAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);
+            return await CallPagedAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>

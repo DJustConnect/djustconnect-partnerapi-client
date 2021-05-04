@@ -29,6 +29,9 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter, CancellationToken cancellationToken);
+        Task<ConsumerAccessDTO> GetConsumerAccessAsync();
+        Task<ConsumerAccessDTO> GetConsumerAccessAsync(CancellationToken cancellationToken);
+
 
     }
 }

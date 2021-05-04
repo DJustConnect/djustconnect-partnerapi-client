@@ -57,6 +57,10 @@ namespace DjustConnect.PartnerAPI.Client
                 Result = Newtonsoft.Json.JsonConvert.DeserializeObject<T[]>(json)
             };
         }
+        public static T GetResult<T>(Dictionary<string, IEnumerable<string>> headers, string json)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+        }
 
         protected static Dictionary<string, IEnumerable<string>> GetResponseHeaders(HttpResponseMessage response_)
         {
@@ -81,7 +85,7 @@ namespace DjustConnect.PartnerAPI.Client
             return request;
         }
 
-        protected async Task<PagedResult<T>> CallAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken)
+        protected async Task<PagedResult<T>> CallPagedAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken)
         {
             return await CallAPI(urlBuilder, GetPagedResult<T>, cancellationToken);
         }
