@@ -16,8 +16,8 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
         Task<ResourceDTO[]> GetResourcesAsync(CancellationToken cancellationToken);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId, CancellationToken cancellationToken);
-        Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter);
-        Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter, CancellationToken cancellationToken);
+        //Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter);
+        //Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter, CancellationToken cancellationToken);
         Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter);
         Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter);

@@ -1,11 +1,19 @@
 using DjustConnect.PartnerAPI.Client;
+using DjustConnect.PartnerAPI.Client.Filters;
 using System;
+using System.Threading;
 using Xunit;
 
 namespace DjustConnect.PartnerAPI.ClientTests
 {
     public class ConsumerClientTests 
     {
+        // GetFarmIdTypes
+        // GetResources
+        // GetResourceHealth
+        // GetRarStatus
+        // GetDarStatus
+        // GetFarmStatus
         private ConsumerClient BuildClient()
         {
             string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
@@ -141,10 +149,11 @@ namespace DjustConnect.PartnerAPI.ClientTests
         public void GetRarStatus_ReturnsNotNull()
         {
             // Arrange
-            string resourceNameFilter = "prov-2-test";
+            RarStatusFilter filter = new RarStatusFilter();
+            filter.ResourceName = "prov-2-test";
 
             // Act
-            var okResult = BuildClient().GetRarStatusAsync(resourceNameFilter).Result;
+            var okResult = BuildClient().GetRarStatusAsync(filter, CancellationToken.None).Result;
 
             // Assert
             Assert.NotNull(okResult);

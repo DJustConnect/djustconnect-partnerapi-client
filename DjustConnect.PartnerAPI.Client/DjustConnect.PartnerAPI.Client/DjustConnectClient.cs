@@ -21,7 +21,7 @@ namespace DjustConnect.PartnerAPI.Client
         }
         public DjustConnectClient(HttpClient httpClient)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient; 
         }
 
         public static HttpClient CreateHttpClient(string thumbprint, string subscriptionkey)
