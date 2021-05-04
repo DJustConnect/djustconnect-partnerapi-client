@@ -34,10 +34,18 @@ namespace DjustConnect.PartnerAPI.Client
         }
         #endregion
 
-        //public Task<ConsumerAccessDTO[]> GetConsumerAccessAsync()
-        //{
-        //    return GetConsumerAccessAsync(CancellationToken.None);
-        //}
+        public Task<PagedResult<ConsumerAccessDTO[]>> GetConsumerAccessAsync()
+        {
+            return GetConsumerAccessAsync(CancellationToken.None);
+        }
+        public async Task<PagedResult<ConsumerAccessDTO[]>> GetConsumerAccessAsync(CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
+
+            return await CallAPI<ConsumerAccessDTO[]>(urlBuilder_, cancellationToken);
+        }
+
 
         public Task GetFarmMappingAsync() // api/FarmMapping 
         {

@@ -9,7 +9,7 @@ using DjustConnect.PartnerAPI.Client.Filters;
 
 namespace DjustConnect.PartnerAPI.Client.Interfaces
 {
-    public interface IConsumerClient // TODO, update filtered methods
+    public interface IConsumerClient
     {
         Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync();
         Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken);
