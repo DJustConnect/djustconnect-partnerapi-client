@@ -56,72 +56,19 @@ namespace DjustConnect.PartnerAPI.Client
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType
+        public Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync() // api/FarmIdType
         {
             return GetFarmIdTypesAsync(CancellationToken.None);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken)
+        public async Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync(CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmIdType");
 
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = new HttpRequestMessage())
-                {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-
-
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            try
-                            {
-                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmIdTypeDTO[]>(responseData_);
-                                return result_;
-                            }
-                            catch (Exception exception_)
-                            {
-                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
-                        }
-                        else if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                        return null;
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
+            return await CallAPI<FarmIdTypeDTO[]>(urlBuilder_, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -271,6 +218,8 @@ namespace DjustConnect.PartnerAPI.Client
             return GetRarStatusAsyncWithFilter(filter, CancellationToken.None);
         }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<PagedResult<RarStatusDTO>> GetRarStatusAsyncWithFilter(RarStatusFilter filter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
@@ -289,6 +238,8 @@ namespace DjustConnect.PartnerAPI.Client
             return GetDarStatusAsyncWithFilter(filter, CancellationToken.None);
         }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<PagedResult<DarStatusDTO>> GetDarStatusAsyncWithFilter(DarStatusFilter filter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
@@ -466,11 +417,14 @@ namespace DjustConnect.PartnerAPI.Client
             }
         }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter)
         {
             return GetFarmStatusAsyncWithFilter(filter, CancellationToken.None);
         }
 
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         public async Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();

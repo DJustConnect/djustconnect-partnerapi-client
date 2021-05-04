@@ -11,8 +11,8 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
 {
     public interface IConsumerClient
     {
-        Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync();
-        Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken);
+        Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync();
+        Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync(CancellationToken cancellationToken);
         Task<ResourceDTO[]> GetResourcesAsync();
         Task<ResourceDTO[]> GetResourcesAsync(CancellationToken cancellationToken);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId);
@@ -27,7 +27,7 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
         Task<PagedResult<DarStatusDTO>> GetDarStatusAsyncWithFilter(DarStatusFilter filter, CancellationToken cancellationToken);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
-        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter f);
+        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter, CancellationToken cancellationToken);
 
     }
