@@ -53,6 +53,18 @@ namespace DjustConnect.PartnerAPI.Client
             return await CallAPI<ConsumerAccessDTO>(urlBuilder_, GetResult<ConsumerAccessDTO>,cancellationToken);
         }
 
+        public Task PostConsumerAccessAsync()
+        {
+            return PostConsumerAccessAsync(CancellationToken.None);
+        }
+        public async Task PostConsumerAccessAsync(CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
+
+            await PostAPI(urlBuilder_, cancellationToken);
+        }
+
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType
         {
