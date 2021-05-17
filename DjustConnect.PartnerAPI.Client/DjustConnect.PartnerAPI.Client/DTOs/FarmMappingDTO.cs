@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class FarmMappingDTO : BaseDTO // 415
+    public class FarmMappingDTO : BaseDTO // Error 415
     {
         public static FarmMappingDTO FromJson(string data)
         {

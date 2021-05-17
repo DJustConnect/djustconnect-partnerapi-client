@@ -198,5 +198,23 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Assert
             Assert.NotNull(okResult);
         }
+        [Fact]
+        public void GetDarStatusWithFilter_ReturnsCorrectResultContent()
+        {
+            // Arrange
+            DarStatusFilter filter = new DarStatusFilter();
+            filter.ResourceName = "prov-2-test";
+
+            // Act
+            var okResult = BuildClient().GetDarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
+            var expectedFarmNumber = "0123";
+            var expectedResourceStatus = "Approved";
+            var expectedDarStatus = "NotApplicable";
+
+            // Assert
+            Assert.Equal(okResult.Result[0].FarmNumber, expectedFarmNumber);
+            Assert.Equal(okResult.Result[0].ResourceStatus, expectedResourceStatus);
+            Assert.Equal(okResult.Result[0].DarStatus, expectedDarStatus);
+        }
     }
 }
