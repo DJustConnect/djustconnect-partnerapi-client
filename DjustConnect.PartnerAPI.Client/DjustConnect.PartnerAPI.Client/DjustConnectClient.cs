@@ -84,6 +84,17 @@ namespace DjustConnect.PartnerAPI.Client
             request.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
             return request;
         }
+        protected static HttpRequestMessage PostRequestMessage(StringBuilder urlbuilder)
+        {
+            var request = new HttpRequestMessage();
+
+            request.Method = new HttpMethod("POST");
+            request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+            var url_ = urlbuilder.ToString();
+            request.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+            return request;
+        }
 
         protected async Task<PagedResult<T>> CallPagedAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken)
         {

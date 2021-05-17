@@ -14,8 +14,6 @@ namespace DjustConnect.PartnerAPI.Client
 {
 
     //TODO
-
-    //api/ConsumerAccess - GET
     //api/ConsumerAccess - POST
 
     //api/Consumer/push - GET
