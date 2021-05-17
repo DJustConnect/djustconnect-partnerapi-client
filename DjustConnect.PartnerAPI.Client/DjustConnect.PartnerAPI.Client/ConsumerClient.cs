@@ -56,19 +56,20 @@ namespace DjustConnect.PartnerAPI.Client
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync() // api/FarmIdType
+        public Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync() // api/FarmIdType
         {
             return GetFarmIdTypesAsync(CancellationToken.None);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync(CancellationToken cancellationToken)
+        public async Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmIdType");
 
-            return await CallPagedAPI<FarmIdTypeDTO[]>(urlBuilder_, cancellationToken);
+            return await CallAPI<FarmIdTypeDTO[]>(urlBuilder_, GetResult<FarmIdTypeDTO[]>, cancellationToken);
+            // return await CallPagedAPI<FarmIdTypeDTO>(urlBuilder_, cancellationToken); moet dit een PagedResult zijn?
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>

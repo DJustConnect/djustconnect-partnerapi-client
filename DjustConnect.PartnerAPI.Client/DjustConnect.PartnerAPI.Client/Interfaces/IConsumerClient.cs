@@ -11,8 +11,8 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
 {
     public interface IConsumerClient
     {
-        Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync();
-        Task<PagedResult<FarmIdTypeDTO[]>> GetFarmIdTypesAsync(CancellationToken cancellationToken);
+        Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync();
+        Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken);
         Task<ResourceDTO[]> GetResourcesAsync();
         Task<ResourceDTO[]> GetResourcesAsync(CancellationToken cancellationToken);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId);
