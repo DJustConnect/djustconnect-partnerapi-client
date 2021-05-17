@@ -216,5 +216,17 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Assert.Equal(okResult.Result[0].ResourceStatus, expectedResourceStatus);
             Assert.Equal(okResult.Result[0].DarStatus, expectedDarStatus);
         }
+
+        [Fact]
+        public void PostConsumerAccessAsync_ReturnsNotNull()
+        {
+            // Arrange
+
+            //Act
+            var okResult = BuildClient().PostConsumerAccessAsync(CancellationToken.None);
+
+            //Assert
+            Assert.NotNull(okResult);
+        }
     }
 }

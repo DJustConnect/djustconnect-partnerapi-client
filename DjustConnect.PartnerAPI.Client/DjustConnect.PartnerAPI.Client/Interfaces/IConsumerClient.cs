@@ -15,6 +15,8 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
         Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken);
         Task<ResourceDTO[]> GetResourcesAsync();
         Task<ResourceDTO[]> GetResourcesAsync(CancellationToken cancellationToken);
+        Task PostConsumerAccessAsync();
+        Task PostConsumerAccessAsync(CancellationToken cancellationToken);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId, CancellationToken cancellationToken);
         Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter);
