@@ -34,11 +34,11 @@ namespace DjustConnect.PartnerAPI.Client
         }
         #endregion
 
-        /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task GetFarmMappingAsync() // api/FarmMapping 
-        {
-            return null; // returns farm mapping - 415 Unsupported Media Type
-        }
+        ///// <exception cref="DjustConnectException">A server side error occurred.</exception> // In afwachting
+        //public Task GetFarmMappingAsync() // api/FarmMapping 
+        //{
+        //    return null; // returns farm mapping - 415 Unsupported Media Type
+        //}
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<ConsumerAccessDTO> GetConsumerAccessAsync()
@@ -69,7 +69,6 @@ namespace DjustConnect.PartnerAPI.Client
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmIdType");
 
             return await CallAPI<FarmIdTypeDTO[]>(urlBuilder_, GetResult<FarmIdTypeDTO[]>, cancellationToken);
-            // return await CallPagedAPI<FarmIdTypeDTO>(urlBuilder_, cancellationToken); moet dit een PagedResult zijn?
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -85,60 +84,7 @@ namespace DjustConnect.PartnerAPI.Client
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Resource");
 
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = new HttpRequestMessage())
-                {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-
-
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            try
-                            {
-                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResourceDTO[]>(responseData_);
-                                return result_;
-                            }
-                            catch (Exception exception_)
-                            {
-                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
-                        }
-                        else if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                        return null;
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
+            return await CallAPI<ResourceDTO[]>(urlBuilder_, GetResult<ResourceDTO[]>, cancellationToken);
         }
 
 
@@ -157,60 +103,7 @@ namespace DjustConnect.PartnerAPI.Client
             urlBuilder_.Append("ResourceId=").Append(Uri.EscapeDataString(resourceId != null ? ConvertToString(resourceId, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = new HttpRequestMessage())
-                {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-
-
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            try
-                            {
-                                var result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResourceHealthDTO[]>(responseData_);
-                                return result_;
-                            }
-                            catch (Exception exception_)
-                            {
-                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
-                        }
-                        else if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                        return null;
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
+            return await CallAPI<ResourceHealthDTO[]>(urlBuilder_, GetResult<ResourceHealthDTO[]>, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -271,70 +164,7 @@ namespace DjustConnect.PartnerAPI.Client
             urlBuilder_.Append("resourceNameFilter=").Append(Uri.EscapeDataString(resourceNameFilter != null ? ConvertToString(resourceNameFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = new HttpRequestMessage())
-                {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-
-
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-
-
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            try
-                            {
-
-                                var result_ = new PagedResult<RarStatusDTO>
-                                {
-                                    PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
-                                    PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
-                                    TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Result = Newtonsoft.Json.JsonConvert.DeserializeObject<RarStatusDTO[]>(responseData_)
-                                };
-                                return result_;
-                            }
-                            catch (Exception exception_)
-                            {
-                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
-                        }
-                        else if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                        return null;
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
+            return await CallPagedAPI<RarStatusDTO>(urlBuilder_, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -352,70 +182,7 @@ namespace DjustConnect.PartnerAPI.Client
             urlBuilder_.Append("FarmNumberFilter=").Append(Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = new HttpRequestMessage())
-                {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-
-
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-
-
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            try
-                            {
-
-                                var result_ = new PagedResult<DarStatusDTO> 
-                                {
-                                    PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
-                                    PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
-                                    TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Result = Newtonsoft.Json.JsonConvert.DeserializeObject<DarStatusDTO[]>(responseData_)
-                                };
-                                return result_;
-                            }
-                            catch (Exception exception_)
-                            {
-                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
-                        }
-                        else if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                        return null;
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
+            return await CallPagedAPI<DarStatusDTO>(urlBuilder_, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -453,65 +220,7 @@ namespace DjustConnect.PartnerAPI.Client
             urlBuilder_.Append("FarmNumberFilter=").Append(Uri.EscapeDataString(farmNumberFilter != null ? ConvertToString(farmNumberFilter, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
-            var client_ = _httpClient;
-            try
-            {
-                using (var request_ = new HttpRequestMessage())
-                {
-                    request_.Method = new HttpMethod("GET");
-                    request_.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
-
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            try
-                            {
-                                var result_ = new PagedResult<FarmStatusDTO>
-                                {
-                                    PageNumber = headers_["X-PageNumber"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Pages = headers_["X-Pages"].Select(x => Convert.ToInt32(x)).Single(),
-                                    PageSize = headers_["X-PageSize"].Select(x => Convert.ToInt32(x)).Single(),
-                                    TotalCount = headers_["X-TotalCount"].Select(x => Convert.ToInt32(x)).Single(),
-                                    Result = Newtonsoft.Json.JsonConvert.DeserializeObject<FarmStatusDTO[]>(responseData_)
-                                };
-                                return result_;
-                            }
-                            catch (Exception exception_)
-                            {
-                                throw new DjustConnectException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
-                            }
-                        }
-                        else if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
-                        }
-                        return null;
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-            }
+            return await CallPagedAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);
         }
 
         #region Helpers
