@@ -18,6 +18,8 @@ namespace DjustConnect.PartnerAPI.Client
 
         [JsonProperty("resourceUrl", Required = Required.AllowNull)]
         public string ResourceUrl { get; set; }
+        [JsonProperty("type", Required = Required.AllowNull)]
+        public string Type { get; set; }
 
         public static ResourceDTO FromJson(string data)
         {

@@ -106,7 +106,7 @@ namespace DjustConnect.PartnerAPI.Client
             var client_ = _httpClient;
             try
             {
-                using (var request_ = GetRequestMessage(urlBuilder))
+                using (var request_ = GetRequestMessage(urlBuilder)) // hier zou ik moeten de mogelijkheid kunnen maken om POST ipv GET te gebruiken
                 {
                     var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
