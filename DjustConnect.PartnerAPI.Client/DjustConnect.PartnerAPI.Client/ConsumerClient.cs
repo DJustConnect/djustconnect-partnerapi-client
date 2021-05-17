@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using DjustConnect.PartnerAPI.Client.Interfaces;
 using DjustConnect.PartnerAPI.Client.DTOs;
 using DjustConnect.PartnerAPI.Client.Filters;
@@ -50,22 +48,28 @@ namespace DjustConnect.PartnerAPI.Client
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
 
-            return await CallAPI<ConsumerAccessDTO>(urlBuilder_, GetResult<ConsumerAccessDTO>,cancellationToken);
+            return await CallAPI<ConsumerAccessDTO>(urlBuilder_, GetResult<ConsumerAccessDTO>, cancellationToken);
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
-        public Task PostConsumerAccessAsync()
+        public Task PostConsumerAccessAsync(ConsumerAccessDTO consumerAccessDTO)
         {
-            return PostConsumerAccessAsync(CancellationToken.None);
+            return PostConsumerAccessAsync(CancellationToken.None, consumerAccessDTO);
         }
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task PostConsumerAccessAsync(CancellationToken cancellationToken)
+        public async Task PostConsumerAccessAsync(CancellationToken cancellationToken, ConsumerAccessDTO consumerAccessDTO)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
 
-            await PostAPI(urlBuilder_, cancellationToken);
+            await PostAPI<ConsumerAccessDTO>(urlBuilder_, cancellationToken, consumerAccessDTO);
+
+            // requestbody serializen en meesturen in de body van de request
+            //ConsumerAccessDTO als parameter meegeven
+            // StringContent content = new StringContent(JsonConvert.SerializeObject(somNiet0Dict), Encoding.UTF8, "application/json");
+            //string uri = svcUriApi + "doChecksNietAlles0";
+            //HttpResponseMessage message = httpClient.PostAsync(uri, content).GetAwaiter().GetResult();
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -99,7 +103,6 @@ namespace DjustConnect.PartnerAPI.Client
 
             return await CallAPI<ResourceDTO[]>(urlBuilder_, GetResult<ResourceDTO[]>, cancellationToken);
         }
-
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId) // api/Consumer/resource-health

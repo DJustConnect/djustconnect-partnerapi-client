@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -101,12 +102,14 @@ namespace DjustConnect.PartnerAPI.Client
             return await CallAPI(urlBuilder, GetPagedResult<T>, cancellationToken);
         }
 
-        protected async Task PostAPI(StringBuilder urlBuilder, CancellationToken cancellationToken)
+        protected async Task PostAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken, T dto)
         {
             var client_ = _httpClient;
+            var formatter = new JsonMediaTypeFormatter();
             using (var request_ = PostRequestMessage(urlBuilder))
             {
-                var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                //var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                var response_ = await client_.PostAsync<T>(request_.RequestUri, dto, formatter, cancellationToken).ConfigureAwait(false); // bij debug skipt de code, hoe spring ik hier in?
                 try
                 {
                     var headers_ = response_.GetResponseHeaders();

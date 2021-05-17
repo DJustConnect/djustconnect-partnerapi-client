@@ -22,5 +22,9 @@ namespace DjustConnect.PartnerAPI.Client.DTOs
         {
             return JsonConvert.DeserializeObject<ConsumerAccessDTO>(data);
         }
+        public static string ToJson(ConsumerAccessDTO consumerAccessDTO)
+        {
+            return JsonConvert.SerializeObject(consumerAccessDTO);
+        }
     }
 }

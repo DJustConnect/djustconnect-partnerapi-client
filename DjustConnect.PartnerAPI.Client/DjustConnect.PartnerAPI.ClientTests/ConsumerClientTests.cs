@@ -1,7 +1,9 @@
 using DjustConnect.PartnerAPI.Client;
+using DjustConnect.PartnerAPI.Client.DTOs;
 using DjustConnect.PartnerAPI.Client.Filters;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DjustConnect.PartnerAPI.ClientTests
@@ -221,12 +223,18 @@ namespace DjustConnect.PartnerAPI.ClientTests
         public void PostConsumerAccessAsync_ReturnsNotNull()
         {
             // Arrange
-
+            var dto = new ConsumerAccessDTO();
+            dto.AccessUntil = DateTime.Now.AddYears(1);
             //Act
-            var okResult = BuildClient().PostConsumerAccessAsync(CancellationToken.None);
+            var okResult = BuildClient().PostConsumerAccessAsync(CancellationToken.None, dto);
 
             //Assert
             Assert.NotNull(okResult);
+        }
+        [Fact]
+        public void GetConsumerAccessAsync_ThenPostConsumerAccess_UpdatesConsumerAccess()
+        {
+
         }
     }
 }
