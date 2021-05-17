@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class DjustConnectClient 
+    public class DjustConnectClient
     {
         public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";
         protected HttpClient _httpClient;
@@ -21,7 +21,7 @@ namespace DjustConnect.PartnerAPI.Client
         }
         public DjustConnectClient(HttpClient httpClient)
         {
-            _httpClient = httpClient; 
+            _httpClient = httpClient;
         }
 
         public static HttpClient CreateHttpClient(string thumbprint, string subscriptionkey)
@@ -101,12 +101,34 @@ namespace DjustConnect.PartnerAPI.Client
             return await CallAPI(urlBuilder, GetPagedResult<T>, cancellationToken);
         }
 
+        protected async Task PostAPI(StringBuilder urlBuilder, CancellationToken cancellationToken)
+        {
+            var client_ = _httpClient;
+            using (var request_ = PostRequestMessage(urlBuilder))
+            {
+                var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    var headers_ = response_.GetResponseHeaders();
+                    var status_ = ((int)response_.StatusCode).ToString();
+                    if (status_ != "200" && status_ != "204")
+                    {
+                        throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, null, headers_, null);
+                    }
+                }
+                finally
+                {
+                    if (response_ != null)
+                        response_.Dispose();
+                }
+            }
+        }
         protected async Task<T> CallAPI<T>(StringBuilder urlBuilder, Func<Dictionary<string, IEnumerable<string>>, string, T> getResult, CancellationToken cancellationToken) where T : class
         {
             var client_ = _httpClient;
             try
             {
-                using (var request_ = GetRequestMessage(urlBuilder)) // hier zou ik moeten de mogelijkheid kunnen maken om POST ipv GET te gebruiken
+                using (var request_ = GetRequestMessage(urlBuilder))
                 {
                     var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
