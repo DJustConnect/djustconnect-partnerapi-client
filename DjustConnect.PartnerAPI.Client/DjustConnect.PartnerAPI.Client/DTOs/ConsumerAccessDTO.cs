@@ -9,14 +9,16 @@ namespace DjustConnect.PartnerAPI.Client.DTOs
 {
     public class ConsumerAccessDTO : BaseDTO 
     {
+        //[JsonProperty("id", Required = Required.Always)]
+        //public Guid Id { get; set; }
         [JsonProperty("accessUntil", Required = Required.AllowNull)]
         public DateTime? AccessUntil { get; set; }
-        [JsonProperty("farmIds", Required = Required.Always)]
-        public string FarmsIds { get; set; }
+        [JsonProperty("farmsIds", Required = Required.Always)]
+        public ICollection<string> FarmsIds { get; set; }
         [JsonProperty("resources", Required = Required.Always)]
         public ICollection<ResourceDTO> Resources { get; set; }
         [JsonProperty("farmIdType", Required = Required.Always)]
-        public ICollection<FarmIdTypeDTO> FarmIdTypes { get; set; }
+        public FarmIdTypeDTO FarmIdType { get; set; }
 
         public static ConsumerAccessDTO FromJson(string data)
         {

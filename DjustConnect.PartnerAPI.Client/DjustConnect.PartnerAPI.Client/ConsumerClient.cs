@@ -54,11 +54,11 @@ namespace DjustConnect.PartnerAPI.Client
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task PostConsumerAccessAsync(ConsumerAccessDTO consumerAccessDTO)
         {
-            return PostConsumerAccessAsync(CancellationToken.None, consumerAccessDTO);
+            return PostConsumerAccessAsync(consumerAccessDTO, CancellationToken.None);
         }
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        public async Task PostConsumerAccessAsync(CancellationToken cancellationToken, ConsumerAccessDTO consumerAccessDTO)
+        public async Task PostConsumerAccessAsync(ConsumerAccessDTO consumerAccessDTO, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");

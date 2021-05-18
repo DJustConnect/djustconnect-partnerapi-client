@@ -2,6 +2,7 @@ using DjustConnect.PartnerAPI.Client;
 using DjustConnect.PartnerAPI.Client.DTOs;
 using DjustConnect.PartnerAPI.Client.Filters;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -220,21 +221,37 @@ namespace DjustConnect.PartnerAPI.ClientTests
         }
 
         [Fact]
-        public void PostConsumerAccessAsync_ReturnsNotNull()
+        public async Task GetConsumerAccessAsync_ReturnsCorrectData()
         {
             // Arrange
-            var dto = new ConsumerAccessDTO();
-            dto.AccessUntil = DateTime.Now.AddYears(1);
+
             //Act
-            var okResult = BuildClient().PostConsumerAccessAsync(CancellationToken.None, dto);
+            var okResult = await BuildClient().GetConsumerAccessAsync(CancellationToken.None);
+            var expectedFarmIdType = "KBO";
+            var expectedFarmId = "0262172489";
+            var expectedFarmIdTwo = "0123";
+            var expectedResourceName = "prov-2-test";
 
             //Assert
             Assert.NotNull(okResult);
+            Assert.Contains(expectedFarmId, okResult.FarmsIds);
+            Assert.Contains(expectedFarmIdTwo, okResult.FarmsIds);
+            Assert.Equal(expectedFarmIdType, okResult.FarmIdType.Name);
+            Assert.Contains(expectedResourceName, okResult.Resources.Select(r=>r.Name));
         }
         [Fact]
-        public void GetConsumerAccessAsync_ThenPostConsumerAccess_UpdatesConsumerAccess()
+        public async Task GetConsumerAccessAsync_ThenPostConsumerAccess_UpdatesConsumerAccess()
         {
-
+            // Arrange
+            var client = BuildClient();
+            var newId = "test" + Guid.NewGuid();
+            // Act
+            var consumerAccess = await client.GetConsumerAccessAsync();
+            consumerAccess.FarmsIds.Add(newId);
+            await client.PostConsumerAccessAsync(consumerAccess);
+            var okResult = await client.GetConsumerAccessAsync();
+            // Assert
+            Assert.Contains(newId, okResult.FarmsIds);
         }
     }
 }

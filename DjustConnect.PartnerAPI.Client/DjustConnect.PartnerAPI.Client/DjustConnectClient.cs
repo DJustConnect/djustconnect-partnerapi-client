@@ -1,4 +1,5 @@
 ﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,11 +106,14 @@ namespace DjustConnect.PartnerAPI.Client
         protected async Task PostAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken, T dto)
         {
             var client_ = _httpClient;
-            var formatter = new JsonMediaTypeFormatter();
+            // var formatter = new JsonMediaTypeFormatter();
+            var stringContent = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
+
+
             using (var request_ = PostRequestMessage(urlBuilder))
             {
                 //var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                var response_ = await client_.PostAsync<T>(request_.RequestUri, dto, formatter, cancellationToken).ConfigureAwait(false); // bij debug skipt de code, hoe spring ik hier in?
+                var response_ = await client_.PostAsync(request_.RequestUri, stringContent, cancellationToken).ConfigureAwait(false); // bij debug skipt de code, hoe spring ik hier in?
                 try
                 {
                     var headers_ = response_.GetResponseHeaders();

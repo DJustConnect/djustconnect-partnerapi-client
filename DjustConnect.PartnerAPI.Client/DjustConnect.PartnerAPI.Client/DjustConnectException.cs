@@ -14,7 +14,7 @@ namespace DjustConnect.PartnerAPI.Client
         public Dictionary<string, IEnumerable<string>> Headers { get; private set; }
 
         public DjustConnectException(string message, int statusCode, string response, Dictionary<string, IEnumerable<string>> headers, Exception innerException)
-            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + response.Substring(0, response.Length >= 512 ? 512 : response.Length), innerException)
+            : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + response?.Substring(0, response.Length >= 512 ? 512 : response.Length), innerException)
         {
             StatusCode = statusCode;
             Response = response;
