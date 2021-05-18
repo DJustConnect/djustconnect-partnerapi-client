@@ -244,9 +244,10 @@ namespace DjustConnect.PartnerAPI.ClientTests
         {
             // Arrange
             var client = BuildClient();
-            var newId = "test" + Guid.NewGuid();
+            var newId = "test-ilvo" + Guid.NewGuid();
             // Act
             var consumerAccess = await client.GetConsumerAccessAsync();
+            consumerAccess.FarmsIds = consumerAccess.FarmsIds.Where(id => !id.StartsWith("test-ilvo")).ToList();
             consumerAccess.FarmsIds.Add(newId);
             await client.PostConsumerAccessAsync(consumerAccess);
             var okResult = await client.GetConsumerAccessAsync();
