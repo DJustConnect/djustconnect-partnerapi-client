@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class ProviderClient : DjustConnectClient, IProviderClient
+    public class ProviderClient : Client, IProviderClient
     {
         public ProviderClient(HttpClient httpClient) : base(httpClient)
         {

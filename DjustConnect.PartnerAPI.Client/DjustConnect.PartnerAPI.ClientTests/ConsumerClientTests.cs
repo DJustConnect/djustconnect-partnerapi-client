@@ -2,6 +2,7 @@ using DjustConnect.PartnerAPI.Client;
 using DjustConnect.PartnerAPI.Client.DTOs;
 using DjustConnect.PartnerAPI.Client.Filters;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using Xunit;
 
 namespace DjustConnect.PartnerAPI.ClientTests
 {
-    public class ConsumerClientTests 
+    public class ConsumerClientTests
     {
         // GetFarmIdTypes
         // GetResources
@@ -18,9 +19,12 @@ namespace DjustConnect.PartnerAPI.ClientTests
         // GetDarStatus
         // GetFarmStatus
         // ConsumerAccess GET -> POST -> GET testen of de data wel degelijk correct wordt opgeslagen
+        // FarmMapping
         private ConsumerClient BuildClient()
         {
+            // client cert thumbprint
             string thumbprint = "E7A8C44F41EA5B0A62422C2E431F4D8B90EC208B";
+            // DjustConnect subscriptionkey
             string subscriptionkey = "41d959b9f179424faa0c6f5a97b21c56";
             var client = new ConsumerClient(thumbprint, subscriptionkey); // beide te vinden online (ACC)
             client.BaseUrl = "https://partnerapi.acc.djustconnect.cegeka.com";
@@ -32,7 +36,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
         {
             // Arrange
             string farmNumberFilter = "0262172489";
-           
+
             // Act
             var okResult = BuildClient().GetFarmStatusAsync(farmNumberFilter).Result;
             var expectedPageNumber = 1;
@@ -70,14 +74,11 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Act
             var okResult = BuildClient().GetDarStatusAsync(farmNumberFilter).Result;
             var expectedPageNumber = 1;
-            var expectedTotalCount = 1;
             var expectedPageSize = 100;
-
 
             // Assert
             Assert.NotNull(okResult);
-            Assert.Equal(okResult.PageNumber, expectedPageNumber);
-            Assert.Equal(okResult.TotalCount, expectedTotalCount);
+            Assert.Equal(expectedPageNumber, okResult.PageNumber);
             Assert.Equal(okResult.PageSize, expectedPageSize);
         }
         [Fact]
@@ -236,23 +237,40 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Assert.NotNull(okResult);
             Assert.Contains(expectedFarmId, okResult.FarmsIds);
             Assert.Contains(expectedFarmIdTwo, okResult.FarmsIds);
+            // Error: FarmIdType name =  PE nummer, not KBO , is this a mistake in DC or in the test?
             Assert.Equal(expectedFarmIdType, okResult.FarmIdType.Name);
-            Assert.Contains(expectedResourceName, okResult.Resources.Select(r=>r.Name));
+            Assert.Contains(expectedResourceName, okResult.Resources.Select(r => r.Name));
         }
         [Fact]
         public async Task GetConsumerAccessAsync_ThenPostConsumerAccess_UpdatesConsumerAccess()
         {
+
             // Arrange
             var client = BuildClient();
             var newId = "test-ilvo" + Guid.NewGuid();
             // Act
+            // Get
             var consumerAccess = await client.GetConsumerAccessAsync();
-            consumerAccess.FarmsIds = consumerAccess.FarmsIds.Where(id => !id.StartsWith("test-ilvo")).ToList();
+            var farmIdsCount = consumerAccess.FarmsIds.Count;
             consumerAccess.FarmsIds.Add(newId);
+            // Post
             await client.PostConsumerAccessAsync(consumerAccess);
+            // Get again
             var okResult = await client.GetConsumerAccessAsync();
+
             // Assert
             Assert.Contains(newId, okResult.FarmsIds);
+            Assert.Equal(okResult.FarmsIds.Count, farmIdsCount + 1);
+        }
+        [Fact]
+        public void FarmMappingTest()
+        {
+            var client = BuildClient();
+            var farmmappings = client.GetFarmMappingAsync(new string[] { "0262172489" }, new string[] { "4c17a3f2-c03d-4d65-8440-3a896b245753", "324a23eb-b4bc-4de1-a01b-0e478afac252", "dd03e71c-d114-4cce-a5fe-6843f1fc8878", "d55fe787-6ea0-46e8-9f00-d9e5e86bad2b" }, "4c17a3f2-c03d-4d65-8440-3a896b245753").GetAwaiter().GetResult();
+            //These asserts depend heavily on the current settings in DjustConnect. When adding (or removing) 
+            //mappings, the order of farmmappings might possibly and the count will definitely change
+            Assert.Equal("4402300237", farmmappings.ToArray()[0].FarmMappings.ToArray()[1].Value);
+            Assert.True(farmmappings.ToArray()[0].FarmMappings.Count() == 2);
         }
     }
 }

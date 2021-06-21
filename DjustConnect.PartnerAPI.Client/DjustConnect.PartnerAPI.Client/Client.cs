@@ -13,36 +13,54 @@ using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-    public class DjustConnectClient
+    public class Client
     {
         public string BaseUrl { get; set; } = "https://partnerapi.djustconnect.be/";
         protected HttpClient _httpClient;
 
-        protected DjustConnectClient()
+        protected Client()
         {
         }
-        public DjustConnectClient(HttpClient httpClient)
+        public Client(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
-        public static HttpClient CreateHttpClient(string thumbprint, string subscriptionkey)
+        public static HttpClient GetHttpClientWithLocalCertificate(string thumbprint, string subscriptionkey)
         {
-            var store = new X509Store("My", StoreLocation.LocalMachine);
-            store.Open(OpenFlags.ReadOnly);
-            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
-            if (certificates.Count == 0)
-            {
-                throw new InvalidOperationException($"Certificate not found for CN=consumercsharp in LocalMachine/My.");
-            }
-            var certificate = certificates[0];
-            //var certificate = new X509Certificate2(session.CertificatePath, session.CertificatePassword, X509KeyStorageFlags.MachineKeySet);
+            var certificate = GetCertificateFromLocalCertStore(thumbprint);
+            return GetHttpClient(certificate, subscriptionkey);
+        }
+        public static HttpClient GetHttpClientWithAzureKeyvaultCertificate(string thumbprint, string subscriptionkey, string keyvaultname, string tenantId, string certSecretname)
+        {
+            var certificate = GetCertificateFromKeyVault(thumbprint, keyvaultname, tenantId, certSecretname);
+            return GetHttpClient(certificate, subscriptionkey);
+        }
+
+        private static HttpClient GetHttpClient(X509Certificate2 certificate, string subscriptionkey)
+        {
             var clientHandler = new HttpClientHandler();
             clientHandler.ClientCertificates.Add(certificate);
             clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
             var http = new HttpClient(clientHandler);
             http.DefaultRequestHeaders.Add("DjustConnect-Subscription-Key", subscriptionkey);
             return http;
+        }
+        private static X509Certificate2 GetCertificateFromKeyVault(string thumbprint, string keyvaultname, string tenantId, string certSecretname)
+        {
+            var ascs = new AzureSecretClientService(keyvaultname,tenantId);
+            return ascs.GetClientCertificateFromKeyVault(certSecretname);
+        }
+        private static X509Certificate2 GetCertificateFromLocalCertStore(string thumbprint)
+        {
+            var store = new X509Store("My", StoreLocation.LocalMachine);
+            store.Open(OpenFlags.ReadOnly);
+            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
+            if (certificates.Count == 0)
+            {
+                throw new InvalidOperationException($"Certificate not found in LocalMachine/My.");
+            }
+            return certificates[0];
         }
         public static void AddPaging()
         {
@@ -89,10 +107,8 @@ namespace DjustConnect.PartnerAPI.Client
         protected static HttpRequestMessage PostRequestMessage(StringBuilder urlbuilder)
         {
             var request = new HttpRequestMessage();
-
             request.Method = new HttpMethod("POST");
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
             var url_ = urlbuilder.ToString();
             request.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
             return request;
@@ -105,15 +121,10 @@ namespace DjustConnect.PartnerAPI.Client
 
         protected async Task PostAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken, T dto)
         {
-            var client_ = _httpClient;
-            // var formatter = new JsonMediaTypeFormatter();
             var stringContent = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
-
-
             using (var request_ = PostRequestMessage(urlBuilder))
             {
-                //var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                var response_ = await client_.PostAsync(request_.RequestUri, stringContent, cancellationToken).ConfigureAwait(false); // bij debug skipt de code, hoe spring ik hier in?
+                var response_ = await _httpClient.PostAsync(request_.RequestUri, stringContent, cancellationToken).ConfigureAwait(false); // bij debug skipt de code, hoe spring ik hier in?
                 try
                 {
                     var headers_ = response_.GetResponseHeaders();
@@ -132,18 +143,14 @@ namespace DjustConnect.PartnerAPI.Client
         }
         protected async Task<T> CallAPI<T>(StringBuilder urlBuilder, Func<Dictionary<string, IEnumerable<string>>, string, T> getResult, CancellationToken cancellationToken) where T : class
         {
-            var client_ = _httpClient;
             try
             {
                 using (var request_ = GetRequestMessage(urlBuilder))
                 {
-                    var response_ = await client_.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var response_ = await _httpClient.SendAsync(request_, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
                     {
                         var headers_ = response_.GetResponseHeaders();
-                        // TODO var status = response_.GetStatusCode();
-                        //var headers_ = GetResponseHeaders(response_);
-
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
                         {

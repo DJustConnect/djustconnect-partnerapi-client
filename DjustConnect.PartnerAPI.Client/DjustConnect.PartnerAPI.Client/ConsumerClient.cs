@@ -7,18 +7,16 @@ using System.Net.Http;
 using DjustConnect.PartnerAPI.Client.Interfaces;
 using DjustConnect.PartnerAPI.Client.DTOs;
 using DjustConnect.PartnerAPI.Client.Filters;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace DjustConnect.PartnerAPI.Client
 {
-
-    //TODO
-    //api/ConsumerAccess - POST
-
     //api/Consumer/push - GET
     //api/Consumer/push/activate - POST
     //api/Consumer/push/deactivate - POST
 
-    public class ConsumerClient : DjustConnectClient, IConsumerClient
+    public class ConsumerClient : Client, IConsumerClient
     {
         #region Constructors
         public ConsumerClient(HttpClient httpClient) : base(httpClient)
@@ -26,15 +24,37 @@ namespace DjustConnect.PartnerAPI.Client
         }
         public ConsumerClient(string thumbprint, string subscriptionkey)
         {
-            _httpClient = DjustConnectClient.CreateHttpClient(thumbprint, subscriptionkey);
+            _httpClient = Client.GetHttpClientWithLocalCertificate(thumbprint, subscriptionkey);
+        }
+        public ConsumerClient(string thumbprint, string subscriptionkey, string keyvaultname, string tenantId, string certSecretname)
+        {
+            _httpClient = Client.GetHttpClientWithAzureKeyvaultCertificate(thumbprint, subscriptionkey, keyvaultname, tenantId, certSecretname);
         }
         #endregion
 
-        ///// <exception cref="DjustConnectException">A server side error occurred.</exception> // In afwachting
-        //public Task GetFarmMappingAsync() // api/FarmMapping 
-        //{
-        //    return null; // returns farm mapping - 415 Unsupported Media Type
-        //}
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception> // In afwachting
+
+        public async Task<IEnumerable<FarmMappingResultDTO>> GetFarmMappingAsync(string[] requestIDs, string[] responseIDs, string farmIDType)
+        {
+            var urlBuilder_ = new StringBuilder();
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/farmMapping");
+            List<UserFarmDTO> userFarms = new List<UserFarmDTO>();
+            JObject o = JObject.FromObject(new
+            {
+                farmIds = requestIDs,
+                farmIdType = farmIDType, // = KBO
+                //kbo, beslagnummer, keuring spuit, pe
+                resultFarmIdTypes = responseIDs
+            });
+            var jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(o);
+            var request = GetRequestMessage(urlBuilder_);
+            request.Content = new StringContent(jsonstring, Encoding.UTF8, "application/json");
+            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<FarmMappingResultDTO>>(responseData).ToList();
+        }
+
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<ConsumerAccessDTO> GetConsumerAccessAsync()
@@ -62,14 +82,7 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
-
             await PostAPI<ConsumerAccessDTO>(urlBuilder_, cancellationToken, consumerAccessDTO);
-
-            // requestbody serializen en meesturen in de body van de request
-            //ConsumerAccessDTO als parameter meegeven
-            // StringContent content = new StringContent(JsonConvert.SerializeObject(somNiet0Dict), Encoding.UTF8, "application/json");
-            //string uri = svcUriApi + "doChecksNietAlles0";
-            //HttpResponseMessage message = httpClient.PostAsync(uri, content).GetAwaiter().GetResult();
         }
 
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
