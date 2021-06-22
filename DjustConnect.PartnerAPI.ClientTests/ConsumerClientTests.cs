@@ -12,6 +12,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
 {
     public class ConsumerClientTests
     {
+        private readonly ConsumerClient _client;
         // GetFarmIdTypes
         // GetResources
         // GetResourceHealth
@@ -20,6 +21,10 @@ namespace DjustConnect.PartnerAPI.ClientTests
         // GetFarmStatus
         // ConsumerAccess GET -> POST -> GET testen of de data wel degelijk correct wordt opgeslagen
         // FarmMapping
+        public ConsumerClientTests()
+        {
+            _client = BuildClient();
+        }
         private ConsumerClient BuildClient()
         {
             // client cert thumbprint
@@ -38,7 +43,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             string farmNumberFilter = "0262172489";
 
             // Act
-            var okResult = BuildClient().GetFarmStatusAsync(farmNumberFilter).Result;
+            var okResult = _client.GetFarmStatusAsync(farmNumberFilter).Result;
             var expectedPageNumber = 1;
             var expectedTotalCount = 1;
             var expectedPageSize = 10;
@@ -56,7 +61,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             string farmNumberFilter = "0262172489";
 
             // Act
-            var okResult = BuildClient().GetFarmStatusAsync(farmNumberFilter).Result;
+            var okResult = _client.GetFarmStatusAsync(farmNumberFilter).Result;
             var expectedStatus = "HasUser";
             var expectedFarmNumber = "0262172489";
 
@@ -72,7 +77,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             string farmNumberFilter = "0262172489";
 
             // Act
-            var okResult = BuildClient().GetDarStatusAsync(farmNumberFilter).Result;
+            var okResult = _client.GetDarStatusAsync(farmNumberFilter).Result;
             var expectedPageNumber = 1;
             var expectedPageSize = 100;
 
@@ -88,7 +93,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             string farmNumberFilter = "0123";
 
             // Act
-            var okResult = BuildClient().GetDarStatusAsync(farmNumberFilter).Result;
+            var okResult = _client.GetDarStatusAsync(farmNumberFilter).Result;
             var expectedFarmNumber = "0123";
             var expectedResourceStatus = "Approved";
             var expectedDarStatus = "NotApplicable";
@@ -105,7 +110,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Guid? resourceId = Guid.Parse("4fbfa55c-e188-4e35-4089-08d8c2981168");
 
             // Act
-            var okResult = BuildClient().GetResourceHealthAsync(resourceId).Result;
+            var okResult = _client.GetResourceHealthAsync(resourceId).Result;
 
             // Assert
             Assert.NotNull(okResult);
@@ -118,7 +123,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Guid? resourceId = Guid.Parse("4fbfa55c-e188-4e35-4089-08d8c2981168");
 
             // Act
-            var okResult = BuildClient().GetResourceHealthAsync(resourceId).Result;
+            var okResult = _client.GetResourceHealthAsync(resourceId).Result;
             var expectedResourceHealth = ResourceHealth.OK;
             var expectedResourceName = "prov-2-test";
 
@@ -133,7 +138,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Arrange
 
             // Act
-            var okResult = BuildClient().GetResourcesAsync().Result;
+            var okResult = _client.GetResourcesAsync().Result;
 
             // Assert
             Assert.NotNull(okResult);
@@ -145,7 +150,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Arrange
 
             // Act
-            var okResult = BuildClient().GetFarmIdTypesAsync().Result;
+            var okResult = _client.GetFarmIdTypesAsync().Result;
 
             // Assert
             Assert.NotNull(okResult);
@@ -158,7 +163,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             string resourceName = "prov-2-test";
 
             // Act
-            var okResult = BuildClient().GetRarStatusAsync(resourceName).Result;
+            var okResult = _client.GetRarStatusAsync(resourceName).Result;
 
             // Assert
             Assert.NotNull(okResult);
@@ -171,7 +176,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             filter.ResourceName = "prov-2-test";
 
             // Act
-            var okResult = BuildClient().GetRarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
+            var okResult = _client.GetRarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
 
             // Assert
             Assert.NotNull(okResult);
@@ -184,7 +189,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             filter.ResourceName = "prov-2-test";
 
             // Act
-            var okResult = BuildClient().GetDarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
+            var okResult = _client.GetDarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
 
             // Assert
             Assert.NotNull(okResult);
@@ -197,7 +202,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             filter.FarmNumber = "0262172489";
 
             // Act
-            var okResult = BuildClient().GetFarmStatusAsyncWithFilter(filter, CancellationToken.None).Result;
+            var okResult = _client.GetFarmStatusAsyncWithFilter(filter, CancellationToken.None).Result;
 
             // Assert
             Assert.NotNull(okResult);
@@ -210,7 +215,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             filter.ResourceName = "prov-2-test";
 
             // Act
-            var okResult = BuildClient().GetDarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
+            var okResult = _client.GetDarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
             var expectedFarmNumber = "0123";
             var expectedResourceStatus = "Approved";
             var expectedDarStatus = "NotApplicable";
@@ -227,7 +232,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             // Arrange
 
             //Act
-            var okResult = await BuildClient().GetConsumerAccessAsync(CancellationToken.None);
+            var okResult = await _client.GetConsumerAccessAsync(CancellationToken.None);
             var expectedFarmIdType = "KBO";
             var expectedFarmId = "0262172489";
             var expectedFarmIdTwo = "0123";
@@ -246,31 +251,36 @@ namespace DjustConnect.PartnerAPI.ClientTests
         {
 
             // Arrange
-            var client = BuildClient();
+         
             var newId = "test-ilvo" + Guid.NewGuid();
             // Act
             // Get
-            var consumerAccess = await client.GetConsumerAccessAsync();
+            var consumerAccess = await _client.GetConsumerAccessAsync();
             var farmIdsCount = consumerAccess.FarmsIds.Count;
             consumerAccess.FarmsIds.Add(newId);
             // Post
-            await client.PostConsumerAccessAsync(consumerAccess);
+            await _client.PostConsumerAccessAsync(consumerAccess);
             // Get again
-            var okResult = await client.GetConsumerAccessAsync();
+            var okResult = await _client.GetConsumerAccessAsync();
 
             // Assert
             Assert.Contains(newId, okResult.FarmsIds);
             Assert.Equal(okResult.FarmsIds.Count, farmIdsCount + 1);
         }
         [Fact]
-        public void FarmMappingTest()
+        public async void FarmMappingTest()
         {
-            var client = BuildClient();
-            var farmmappings = client.GetFarmMappingAsync(new string[] { "0262172489" }, new string[] { "4c17a3f2-c03d-4d65-8440-3a896b245753", "324a23eb-b4bc-4de1-a01b-0e478afac252", "dd03e71c-d114-4cce-a5fe-6843f1fc8878", "d55fe787-6ea0-46e8-9f00-d9e5e86bad2b" }, "4c17a3f2-c03d-4d65-8440-3a896b245753").GetAwaiter().GetResult();
+            var farmmappings = await _client.GetFarmMappingAsync(new string[] { "0262172489" }, new string[] { "4c17a3f2-c03d-4d65-8440-3a896b245753", "324a23eb-b4bc-4de1-a01b-0e478afac252", "dd03e71c-d114-4cce-a5fe-6843f1fc8878", "d55fe787-6ea0-46e8-9f00-d9e5e86bad2b" }, "4c17a3f2-c03d-4d65-8440-3a896b245753");
             //These asserts depend heavily on the current settings in DjustConnect. When adding (or removing) 
             //mappings, the order of farmmappings might possibly and the count will definitely change
             Assert.Equal("4402300237", farmmappings.ToArray()[0].FarmMappings.ToArray()[1].Value);
             Assert.True(farmmappings.ToArray()[0].FarmMappings.Count() == 2);
+        }
+        [Fact]
+        public async void FarmerTest()
+        {
+            var farms = await _client.GetFarmsAsync("720FCBFB-2AEC-42E8-82AA-DCAEBD2DC563");
+            Assert.Contains<string>("0262172489", farms);
         }
     }
 }

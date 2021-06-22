@@ -1,15 +1,15 @@
 # DjustConnect PartnerAPIClient
 ##Consumerclient
-* Addresses the partnerapi from a data-consumer perspective
-* Choose appropriate constructor 
+* Addresses the partnerapi from a data-consumer perspective  
+* Choose appropriate constructor  
 	- parameter: HttpClient  
-		initiates Consumerclient with your ready-made httpclient
-	- parameters: thumbprint, subscriptionkey  
-		initiates Consumerclient with an HttpClient presenting a certificate from your Local Machine's personal certificate store.
-	- parameters: thumbprint, subscriptionkey, keyvaultname, tenantID, certSecretname   
-		initiates Consumerclient with an HttpClient presenting a certificate from your Azure key vault.  
-* Catered endpoints:
-	- FarmMapping (GET)
+		initiates Consumerclient with your ready-made httpclient  
+	- parameters: thumbprint, subscriptionkey   
+		initiates Consumerclient with an HttpClient presenting a certificate from your Local Machine's personal certificate store.  
+	- parameters: thumbprint, subscriptionkey, keyvaultname, tenantID, certSecretname     
+		initiates Consumerclient with an HttpClient presenting a certificate from your Azure key vault.   
+* Catered endpoints:  
+	- FarmMapping (GET)  
 	GetFarmMappingAsync(string[] requestIDs, string[] responseIDs, string farmIDType)  
 		+ requestIDs: the farmIds for which mappings are requested  
 		+ responseIds: specify the Id's to be included in response  
@@ -21,25 +21,29 @@
 	- ConsumerAccess (GET, POST)  
 		+ GET: get your ConsumerAccess, params = no, response ConsumerAccessDTO
 		+ POST: create/update your ConsumerAccess.  
-		params: no  
-		requestbody = ConsumerAccessDTO  
-		response: HttpStatusCode   
-		To update, first GET, apply changes to response ConsumerAccessDTO, add changed DTO to POST requestbody  
+			* params: no  
+			* requestbody = ConsumerAccessDTO  
+			* response: HttpStatusCode   
+			To update, first GET, apply changes to response ConsumerAccessDTO, add changed DTO to POST requestbody  
 	- FarmIdType (GET)  
-		params: no  
-		response: all farmIdTypes (farmIdTypeDTO)
+		+ params: no  
+		+ response: all farmIdTypes (farmIdTypeDTO)
 	- Resource (GET)   
-		params: no  
-		response: all resources (ResourceDTO)  
-	- ResourceHalth (GET)  
-		params: string resourcetypeID  
-		response: resourceHealth object for requested resource (ResourceHealthDTO)
+		+ params: no  
+		+ response: all resources (ResourceDTO)  
+	- ResourceHealth (GET)  
+		+ params: string resourcetypeID  
+		+ response: resourceHealth object for requested resource (ResourceHealthDTO)
 	- Rarstatus (GET) - Returns the statuses of your Resource Access Requests  
-		params: resourceNameFilter, StatusFilter, apiNameFilter, ProviderNAmeFilter, PageNumber, PageSize, Sort  
-		response: RarStatusDTO
+		+ params: resourceNameFilter[, StatusFilter, apiNameFilter, ProviderNAmeFilter, PageNumber, PageSize, Sort]  
+		+ response: RarStatusDTO
 	- DarStatus (GET) - Returns the current status of your Data Access Requests  
-		params: FarmNumberFilter, ResourceNameFilter, ResourceIdFilter, FarmstatusFilter, DarStatusFilter, PageNumber, PageSize, Sort  
-		response: DarStatusDTO
+		+ params: FarmNumberFilter[, ResourceNameFilter, ResourceIdFilter, FarmstatusFilter, DarStatusFilter, PageNumber, PageSize, Sort]    
+		+ response: DarStatusDTO  
+	- Farmer (GET) - returns array of KBO numbers associated with AzureAdb2c userid
+		+ params: AzureAdB2CUserId
+		+ response: string[] of KBO numbers
+	
 
 
 

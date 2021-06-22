@@ -15,7 +15,6 @@ namespace DjustConnect.PartnerAPI.Client
     //api/Consumer/push - GET
     //api/Consumer/push/activate - POST
     //api/Consumer/push/deactivate - POST
-
     public class ConsumerClient : Client, IConsumerClient
     {
         #region Constructors
@@ -32,8 +31,27 @@ namespace DjustConnect.PartnerAPI.Client
         }
         #endregion
 
-        /// <exception cref="DjustConnectException">A server side error occurred.</exception> // In afwachting
+        public async Task<string[]> GetFarmsAsync(string azureADB2C_UserID)
+        {
+            var urlBuilder_ = new StringBuilder();
+            var requestUrl = urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append($"/api/farmer/{azureADB2C_UserID}").ToString();
+            var response = _httpClient.GetAsync(requestUrl).Result;
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // TODO finish
+                throw new DjustConnectException($"User with id {azureADB2C_UserID} was not found in DjustConnect", (int)response.StatusCode, null, response.GetResponseHeaders(), null);
+            }
+            else if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                // TODO finish
+                throw new DjustConnectException($"Error fetching user with id {azureADB2C_UserID}", (int)response.StatusCode, null, response.GetResponseHeaders(), null);
 
+            }
+            var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(responseData);
+        }
+
+        /// <exception cref="DjustConnectException">A server side error occurred.</exception> // In afwachting
         public async Task<IEnumerable<FarmMappingResultDTO>> GetFarmMappingAsync(string[] requestIDs, string[] responseIDs, string farmIDType)
         {
             var urlBuilder_ = new StringBuilder();

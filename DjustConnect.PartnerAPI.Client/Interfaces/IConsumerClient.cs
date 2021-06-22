@@ -11,6 +11,7 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
 {
     public interface IConsumerClient
     {
+        Task<string[]> GetFarmsAsync(string AzureADB2C_UserID);
         Task<IEnumerable<FarmMappingResultDTO>> GetFarmMappingAsync(string[] requestIDs, string[] responseIDs, string farmIDType);
         Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync();
         Task<FarmIdTypeDTO[]> GetFarmIdTypesAsync(CancellationToken cancellationToken);

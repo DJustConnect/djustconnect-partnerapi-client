@@ -96,10 +96,8 @@ namespace DjustConnect.PartnerAPI.Client
         protected static HttpRequestMessage GetRequestMessage(StringBuilder urlbuilder)
         {
             var request = new HttpRequestMessage();
-
             request.Method = new HttpMethod("GET");
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-
             var url_ = urlbuilder.ToString();
             request.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
             return request;
