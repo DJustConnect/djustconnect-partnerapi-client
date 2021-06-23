@@ -12,6 +12,11 @@ namespace DjustConnect.PartnerAPI.ClientTests
 {
     public class ConsumerClientTests
     {
+        // DISCLAIMER:
+        // Asserts in these tests depend heavily on the specific settings in DjustConnect for this specific test-consumer. 
+        // specify your own setup when trying to execute the tests and consider them rather as a manual on how to use the 
+        // ConsumerClient code
+
         private readonly ConsumerClient _client;
         // GetFarmIdTypes
         // GetResources
@@ -21,6 +26,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
         // GetFarmStatus
         // ConsumerAccess GET -> POST -> GET testen of de data wel degelijk correct wordt opgeslagen
         // FarmMapping
+        // Farmer (Getfarms)
         public ConsumerClientTests()
         {
             _client = BuildClient();
@@ -251,7 +257,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
         {
 
             // Arrange
-         
+
             var newId = "test-ilvo" + Guid.NewGuid();
             // Act
             // Get
@@ -268,19 +274,42 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Assert.Equal(okResult.FarmsIds.Count, farmIdsCount + 1);
         }
         [Fact]
-        public async void FarmMappingTest()
+        public async void FarmMapping()
         {
             var farmmappings = await _client.GetFarmMappingAsync(new string[] { "0262172489" }, new string[] { "4c17a3f2-c03d-4d65-8440-3a896b245753", "324a23eb-b4bc-4de1-a01b-0e478afac252", "dd03e71c-d114-4cce-a5fe-6843f1fc8878", "d55fe787-6ea0-46e8-9f00-d9e5e86bad2b" }, "4c17a3f2-c03d-4d65-8440-3a896b245753");
-            //These asserts depend heavily on the current settings in DjustConnect. When adding (or removing) 
-            //mappings, the order of farmmappings might possibly and the count will definitely change
             Assert.Equal("4402300237", farmmappings.ToArray()[0].FarmMappings.ToArray()[1].Value);
             Assert.True(farmmappings.ToArray()[0].FarmMappings.Count() == 2);
         }
         [Fact]
-        public async void FarmerTest()
+        public async void Farmer()
         {
             var farms = await _client.GetFarmsAsync("720FCBFB-2AEC-42E8-82AA-DCAEBD2DC563");
             Assert.Contains<string>("0262172489", farms);
+        }
+
+        [Fact]
+        public async void GetPushNotificationDetails()
+        {
+            // asserts will fail when endpoint is deactivated! 
+            var result = await _client.GetPushNotificationsEndpointAsync();
+            Assert.Contains("samples.djustconnect.be/Consumercsharp/Events", result.Endpoint);
+            Assert.NotNull(result.SubscriptionStatus);
+        }
+
+        [Fact]
+        public async void DectivatePushNotificationEndpoint()
+        {
+            // Possible StatusCodes (200 = ok, 403 not a consumer (forbidden))
+            // Toggle between activate and deactivate then check status with GetPushNotificationDetails
+            var result = await _client.DeactivatePushNotificationsEndpointAsync("https://samples.djustconnect.be/Consumercsharp/Events");
+            Assert.Equal("OK", result);
+        }
+        [Fact]
+        public async void ActivatePushNotificationEndpoint()
+        {   // Possible StatusCodes (200 = ok, 400 = activation endpoint not valid (bad request), 403 not a consumer (forbidden))
+            // Toggle between activate and deactivate then check status with GetPushNotificationDetails
+            var result = await _client.ActivatePushNotificationsEndpointAsync("https://samples.djustconnect.be/Consumercsharp/Events");
+            Assert.Equal("OK", result);
         }
     }
 }
