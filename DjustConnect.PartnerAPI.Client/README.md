@@ -1,5 +1,5 @@
 # DjustConnect PartnerAPIClient
-##Consumerclient
+## Consumerclient
 * Addresses the partnerapi from a data-consumer perspective  
 * Choose appropriate **constructor**  
 	- params: HttpClient  
