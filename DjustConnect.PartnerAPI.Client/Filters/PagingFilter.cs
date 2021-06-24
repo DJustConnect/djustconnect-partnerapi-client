@@ -10,7 +10,7 @@ namespace DjustConnect.PartnerAPI.Client.Filters
     {
         public int? PageSize { get; set; } // why is this nullable? (original)
         public int? PageNumber { get; set; }
-        public int? Pages { get; set; } // useful?
-        public int? TotalCount { get; set; }
+        //public int? Pages { get; set; } // useful?
+        //public int? TotalCount { get; set; }
     }
 }

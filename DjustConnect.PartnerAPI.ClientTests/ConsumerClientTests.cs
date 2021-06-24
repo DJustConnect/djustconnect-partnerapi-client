@@ -178,12 +178,15 @@ namespace DjustConnect.PartnerAPI.ClientTests
         public void GetRarStatusWithFilter_ReturnsNotNull()
         {
             // Arrange
-            RarStatusFilter filter = new RarStatusFilter();
-            filter.ResourceName = "prov-2-test";
+            RarStatusFilter filter = new RarStatusFilter
+            {
+                ResourceName = "prov-2-test",
+                PageSize = 2,
+                PageNumber = 1
+            };
 
             // Act
             var okResult = _client.GetRarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
-
             // Assert
             Assert.NotNull(okResult);
         }
