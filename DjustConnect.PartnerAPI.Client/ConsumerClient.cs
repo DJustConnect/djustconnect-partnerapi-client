@@ -83,7 +83,7 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
-            await PostAPI<ConsumerAccessDTO>(urlBuilder_, cancellationToken, consumerAccessDTO);
+            await PostAPI(urlBuilder_, cancellationToken, consumerAccessDTO);
         }
 
         //api/farmIdType   -GET
@@ -103,7 +103,7 @@ namespace DjustConnect.PartnerAPI.Client
             return await CallAPI(urlBuilder_, GetResult<FarmIdTypeDTO[]>, cancellationToken);
         }
 
-        //api/resource    _GET
+        //api/resource    -GET
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<ResourceDTO[]> GetResourcesAsync() // api/Resource
         {
@@ -261,7 +261,7 @@ namespace DjustConnect.PartnerAPI.Client
             return await CallPagedAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);
         }
 
-        //api/Consumer/push - GET
+        //api/Consumer/push -GET
         public Task<NotificationResultDTO> GetPushNotificationsEndpointAsync()
         {
             return GetPushNotificationsEndpointAsync(CancellationToken.None);
@@ -273,36 +273,35 @@ namespace DjustConnect.PartnerAPI.Client
             var response = await CallAPI(urlBuilder_, GetResult<NotificationResultDTO>, cancellationToken);
             return response;
         }
-        //api/Consumer/push/activate - POST
-        public async Task<string> ActivatePushNotificationsEndpointAsync(string endpoint)
+        //api/Consumer/push/activate -POST
+        public async Task<string> ActivatePushNotificationsEndpointAsync(string notificationsEndpoint)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Consumer/push/activate");
-                        JObject o = JObject.FromObject(new
+            JObject o = JObject.FromObject(new
             {
-                Endpoint = endpoint
+                Endpoint = notificationsEndpoint
             });
             var jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(o);
             var request = PostRequestMessage(urlBuilder_);
             request.Content = new StringContent(jsonstring, Encoding.UTF8, "application/json");
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
-            var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var response = await _httpClient.PostAsync(request.RequestUri, request.Content).ConfigureAwait(false);
             return response.StatusCode.ToString();
+
         }
         //api/Consumer/push/deactivate - POST
-        public async Task<string> DeactivatePushNotificationsEndpointAsync(string endpoint)
+        public async Task<string> DeactivatePushNotificationsEndpointAsync(string notificationsEndpoint)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Consumer/push/deactivate");
             JObject o = JObject.FromObject(new
             {
-                Endpoint = endpoint
+                Endpoint = notificationsEndpoint
             });
             var jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(o);
             var request = PostRequestMessage(urlBuilder_);
             request.Content = new StringContent(jsonstring, Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
-            var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return response.StatusCode.ToString();
         }
 

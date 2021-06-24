@@ -110,16 +110,19 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Assert.Equal(okResult.Result[0].DarStatus, expectedDarStatus);
         }
         [Fact]
-        public void GetResourceHealthStatus_ReturnsNotNull()
+        public async void GetResourceHealthStatus()
         {
-            // Arrange
-            Guid? resourceId = Guid.Parse("4fbfa55c-e188-4e35-4089-08d8c2981168");
+            // Arrange - Get all Consumer Access results
+            var access = await _client.GetConsumerAccessAsync();
 
             // Act
-            var okResult = _client.GetResourceHealthAsync(resourceId).Result;
-
-            // Assert
-            Assert.NotNull(okResult);
+            if(access.Resources.Count > 0)
+            {
+                // check health of first item
+                var okResult = _client.GetResourceHealthAsync(access.Resources.First().Id).Result;
+                // Assert - a health status should be available
+                Assert.True(okResult.Length > 0);
+            }
         }
 
         [Fact]
@@ -139,28 +142,42 @@ namespace DjustConnect.PartnerAPI.ClientTests
         }
 
         [Fact]
-        public void GetResources_ReturnsNotNull()
+        public void GetResources()
         {
-            // Arrange
-
             // Act
-            var okResult = _client.GetResourcesAsync().Result;
-
+            var resources = _client.GetResourcesAsync().Result;
+            bool hasWaterAnalysesInagro = false;
+            foreach(var resourceDTO in resources)
+            {
+                if(resourceDTO.Name.Equals("Water analyse rapporten Inagro"))
+                {
+                    hasWaterAnalysesInagro = true;
+                    break;
+                }
+            }
             // Assert
-            Assert.NotNull(okResult);
+            Assert.True(hasWaterAnalysesInagro);
         }
 
         [Fact]
-        public void GetFarmIdTypes_ReturnsNotNull()
+        public void GetFarmIdTypes()
         {
             // Arrange
-
+            bool isBeslagNummerSupported = false;
             // Act
-            var okResult = _client.GetFarmIdTypesAsync().Result;
-
+            var farmIdTypes = _client.GetFarmIdTypesAsync().Result;
+            foreach (var farmIdType in farmIdTypes)
+            {
+                if (farmIdType.Name.ToLower().Equals("beslagnummer"))
+                {
+                    isBeslagNummerSupported = true;
+                    break;
+                }
+            }
             // Assert
-            Assert.NotNull(okResult);
+            Assert.True(isBeslagNummerSupported);
         }
+
         [Fact]
         public void GetRarStatus_ReturnsNotNull()
         {
@@ -175,46 +192,67 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Assert.NotNull(okResult);
         }
         [Fact]
-        public void GetRarStatusWithFilter_ReturnsNotNull()
+        public void GetRarStatusWithFilter()
         {
             // Arrange
             RarStatusFilter filter = new RarStatusFilter
             {
                 ResourceName = "prov-2-test",
-                PageSize = 2,
-                PageNumber = 1
+                PageSize = 10,
+                PageNumber = 1,
+                ProviderName = "Test Provider 2",
+                Status = "Approved"
             };
 
             // Act
             var okResult = _client.GetRarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
             // Assert
-            Assert.NotNull(okResult);
+            Assert.Equal(1, okResult.PageNumber);
+            Assert.Equal(10, okResult.PageSize);
+            Assert.True(okResult.Result.Length > 0);
+            Assert.Equal("Test Provider 2", okResult.Result[0].ProviderName);
+            Assert.Equal("Approved", okResult.Result[0].Status);
         }
         [Fact]
-        public void GetDarStatusWithFilter_ReturnsNotNull()
+        public void GetDarStatusWithFilter()
         {
             // Arrange
-            DarStatusFilter filter = new DarStatusFilter();
-            filter.ResourceName = "prov-2-test";
-
+            DarStatusFilter filter = new DarStatusFilter
+            {
+                PageSize = 10,
+                PageNumber = 1,
+                DarStatus = "Approved",
+                FarmStatus = "HasUser",
+                ResourceName = "prov-2-test"
+            };
             // Act
             var okResult = _client.GetDarStatusAsyncWithFilter(filter, CancellationToken.None).Result;
-
             // Assert
-            Assert.NotNull(okResult);
+            Assert.Equal(1, okResult.PageNumber);
+            Assert.Equal(10, okResult.PageSize);
+            Assert.True(okResult.Result.Length > 0);
+            Assert.Equal("HasUser", okResult.Result[0].FarmStatus);
+            Assert.Equal("Approved", okResult.Result[0].DarStatus);
         }
         [Fact]
-        public void GetFarmStatusWithFilter_ReturnsNotNull()
+        public void GetFarmStatusWithFilter()
         {
             // Arrange
-            FarmStatusFilter filter = new FarmStatusFilter();
-            filter.FarmNumber = "0262172489";
+            FarmStatusFilter filter = new FarmStatusFilter
+            {
+                PageSize = 10,
+                PageNumber = 1,
+                Status = FarmStatus.HasUser,
+                FarmNumber = "0262172489"
+            };
 
             // Act
             var okResult = _client.GetFarmStatusAsyncWithFilter(filter, CancellationToken.None).Result;
 
             // Assert
-            Assert.NotNull(okResult);
+            Assert.True(okResult.PageNumber == 1);
+            Assert.True(okResult.Result.Length > 0);
+            Assert.Equal(FarmStatus.HasUser.ToString(), okResult.Result[0].Status);
         }
         [Fact]
         public void GetDarStatusWithFilter_ReturnsCorrectResultContent()
@@ -256,7 +294,7 @@ namespace DjustConnect.PartnerAPI.ClientTests
             Assert.Contains(expectedResourceName, okResult.Resources.Select(r => r.Name));
         }
         [Fact]
-        public async Task GetConsumerAccessAsync_ThenPostConsumerAccess_UpdatesConsumerAccess()
+        public async Task UpdateConsumerAccess()
         {
 
             // Arrange
@@ -281,7 +319,6 @@ namespace DjustConnect.PartnerAPI.ClientTests
         {
             var farmmappings = await _client.GetFarmMappingAsync(new string[] { "0262172489" }, new string[] { "4c17a3f2-c03d-4d65-8440-3a896b245753", "324a23eb-b4bc-4de1-a01b-0e478afac252", "dd03e71c-d114-4cce-a5fe-6843f1fc8878", "d55fe787-6ea0-46e8-9f00-d9e5e86bad2b" }, "4c17a3f2-c03d-4d65-8440-3a896b245753");
             Assert.Equal("4402300237", farmmappings.ToArray()[0].FarmMappings.ToArray()[1].Value);
-            Assert.True(farmmappings.ToArray()[0].FarmMappings.Count() == 2);
         }
         [Fact]
         public async void Farmer()
@@ -314,5 +351,6 @@ namespace DjustConnect.PartnerAPI.ClientTests
             var result = await _client.ActivatePushNotificationsEndpointAsync("https://samples.djustconnect.be/Consumercsharp/Events");
             Assert.Equal("OK", result);
         }
+
     }
 }
