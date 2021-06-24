@@ -8,9 +8,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DjustConnect.PartnerAPI.ClientTests", "DjustConnect.PartnerAPI.ClientTests\DjustConnect.PartnerAPI.ClientTests.csproj", "{12752C39-BD9B-43A5-AC3D-B61C725AF13C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EE81C694-3526-44D2-85EA-45A7C6496A91}"
-	ProjectSection(SolutionItems) = preProject
-		DjustConnect.PartnerAPI.Client\README.md = DjustConnect.PartnerAPI.Client\README.md
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
