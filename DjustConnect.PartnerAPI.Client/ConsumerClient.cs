@@ -99,7 +99,6 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmIdType");
-
             return await CallAPI(urlBuilder_, GetResult<FarmIdTypeDTO[]>, cancellationToken);
         }
 
