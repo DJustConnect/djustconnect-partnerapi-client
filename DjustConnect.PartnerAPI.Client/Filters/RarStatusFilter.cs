@@ -8,9 +8,6 @@ namespace DjustConnect.PartnerAPI.Client.Filters
 {
     public class RarStatusFilter : PagingFilter
     {
-        public RarStatusFilter(string resourceName = null, string status = null)
-        {
-        }
         public string ResourceName { get; set; }
         public string Status { get; set; }
         public string ApiName { get; set; }

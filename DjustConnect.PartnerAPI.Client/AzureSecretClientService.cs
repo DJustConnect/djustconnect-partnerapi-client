@@ -20,8 +20,7 @@ namespace DjustConnect.PartnerAPI.Client
                 SharedTokenCacheTenantId = tenantId,
                 VisualStudioTenantId = tenantId
             };
-            _client = new SecretClient(
-                                        new Uri($"https://{keyvaultname}.vault.azure.net/"),
+            _client = new SecretClient(new Uri($"https://{keyvaultname}.vault.azure.net/"),
                                         new DefaultAzureCredential(options));
         }
 

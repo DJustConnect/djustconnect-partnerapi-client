@@ -33,18 +33,7 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var urlBuilder_ = new StringBuilder();
             var requestUrl = urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append($"/api/farmer/{azureADB2C_UserID}").ToString();
-            var response = _httpClient.GetAsync(requestUrl).Result;
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new DjustConnectException($"User with id {azureADB2C_UserID} was not found in DjustConnect", (int)response.StatusCode, null, response.GetResponseHeaders(), null);
-            }
-            else if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new DjustConnectException($"Error fetching user with id {azureADB2C_UserID}", (int)response.StatusCode, null, response.GetResponseHeaders(), null);
-
-            }
-            var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<string[]>(responseData);
+            return await CallAPI(urlBuilder_, GetResult<string[]>, CancellationToken.None);
         }
 
         //api/farmmapping
@@ -64,7 +53,6 @@ namespace DjustConnect.PartnerAPI.Client
             request.Content = new StringContent(jsonstring, Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
             var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
             return Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<FarmMappingResultDTO>>(responseData).ToList();
         }
 
@@ -81,7 +69,7 @@ namespace DjustConnect.PartnerAPI.Client
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
 
-            return await CallAPI<ConsumerAccessDTO>(urlBuilder_, GetResult<ConsumerAccessDTO>, cancellationToken);
+            return await CallAPI(urlBuilder_, GetResult<ConsumerAccessDTO>, cancellationToken);
         }
         //api/cosumeraccess  -POST
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
@@ -95,7 +83,7 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ConsumerAccess?");
-            await PostAPI<ConsumerAccessDTO>(urlBuilder_, cancellationToken, consumerAccessDTO);
+            await PostAPI(urlBuilder_, cancellationToken, consumerAccessDTO);
         }
 
         //api/farmIdType   -GET
@@ -111,11 +99,10 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/FarmIdType");
-
-            return await CallAPI<FarmIdTypeDTO[]>(urlBuilder_, GetResult<FarmIdTypeDTO[]>, cancellationToken);
+            return await CallAPI(urlBuilder_, GetResult<FarmIdTypeDTO[]>, cancellationToken);
         }
 
-        //api/resource    _GET
+        //api/resource    -GET
         /// <exception cref="DjustConnectException">A server side error occurred.</exception>
         public Task<ResourceDTO[]> GetResourcesAsync() // api/Resource
         {
@@ -129,7 +116,7 @@ namespace DjustConnect.PartnerAPI.Client
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Resource");
 
-            return await CallAPI<ResourceDTO[]>(urlBuilder_, GetResult<ResourceDTO[]>, cancellationToken);
+            return await CallAPI(urlBuilder_, GetResult<ResourceDTO[]>, cancellationToken);
         }
 
         //api/consumer/resource-health   -GET  returns the current health of the resource you have access to
@@ -147,7 +134,7 @@ namespace DjustConnect.PartnerAPI.Client
             urlBuilder_.Append("ResourceId=").Append(Uri.EscapeDataString(resourceId != null ? ConvertToString(resourceId, System.Globalization.CultureInfo.InvariantCulture) : "")).Append("&");
             urlBuilder_.Length--;
 
-            return await CallAPI<ResourceHealthDTO[]>(urlBuilder_, GetResult<ResourceHealthDTO[]>, cancellationToken);
+            return await CallAPI(urlBuilder_, GetResult<ResourceHealthDTO[]>, cancellationToken);
         }
 
         //api/rarstatus   -GET   NO FILTER
@@ -185,6 +172,7 @@ namespace DjustConnect.PartnerAPI.Client
             UrlAppend(urlBuilder_, "resourceNameFilter", filter.ResourceName);
             UrlAppend(urlBuilder_, "statusFilter", filter.Status);
             UrlAppend(urlBuilder_, "apiNameFilter", filter.ApiName);
+            UrlAppendPaging(urlBuilder_, filter);
             urlBuilder_.Length--;
 
             return await CallPagedAPI<RarStatusDTO>(urlBuilder_, cancellationToken);
@@ -272,7 +260,7 @@ namespace DjustConnect.PartnerAPI.Client
             return await CallPagedAPI<FarmStatusDTO>(urlBuilder_, cancellationToken);
         }
 
-        //api/Consumer/push - GET
+        //api/Consumer/push -GET
         public Task<NotificationResultDTO> GetPushNotificationsEndpointAsync()
         {
             return GetPushNotificationsEndpointAsync(CancellationToken.None);
@@ -281,39 +269,38 @@ namespace DjustConnect.PartnerAPI.Client
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Consumer/push");
-            var response = await CallAPI<NotificationResultDTO>(urlBuilder_, GetResult<NotificationResultDTO>, cancellationToken);
+            var response = await CallAPI(urlBuilder_, GetResult<NotificationResultDTO>, cancellationToken);
             return response;
         }
-        //api/Consumer/push/activate - POST
-        public async Task<string> ActivatePushNotificationsEndpointAsync(string endpoint)
+        //api/Consumer/push/activate -POST
+        public async Task<string> ActivatePushNotificationsEndpointAsync(string notificationsEndpoint)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Consumer/push/activate");
-                        JObject o = JObject.FromObject(new
+            JObject o = JObject.FromObject(new
             {
-                Endpoint = endpoint
+                Endpoint = notificationsEndpoint
             });
             var jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(o);
             var request = PostRequestMessage(urlBuilder_);
             request.Content = new StringContent(jsonstring, Encoding.UTF8, "application/json");
-            var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
-            var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var response = await _httpClient.PostAsync(request.RequestUri, request.Content).ConfigureAwait(false);
             return response.StatusCode.ToString();
+
         }
         //api/Consumer/push/deactivate - POST
-        public async Task<string> DeactivatePushNotificationsEndpointAsync(string endpoint)
+        public async Task<string> DeactivatePushNotificationsEndpointAsync(string notificationsEndpoint)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Consumer/push/deactivate");
             JObject o = JObject.FromObject(new
             {
-                Endpoint = endpoint
+                Endpoint = notificationsEndpoint
             });
             var jsonstring = Newtonsoft.Json.JsonConvert.SerializeObject(o);
             var request = PostRequestMessage(urlBuilder_);
             request.Content = new StringContent(jsonstring, Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
-            var responseData = response.Content == null ? null : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return response.StatusCode.ToString();
         }
 
@@ -357,7 +344,8 @@ namespace DjustConnect.PartnerAPI.Client
         public void UrlAppendPaging(StringBuilder urlBuilder, PagingFilter filter)
         {
             if (filter.PageSize != null)
-                urlBuilder.Append($"PageSize=").Append(Uri.EscapeDataString(ConvertToString(filter.PageSize.Value, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder.Append("PageSize=").Append(Uri.EscapeDataString(ConvertToString(filter.PageSize.Value, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder.Append("PageNumber=").Append(Uri.EscapeDataString(ConvertToString(filter.PageNumber.Value, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
         }
 
         public void UrlAppend(StringBuilder urlBuilder, string parameterName, string parameter)
