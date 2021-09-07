@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,20 +9,17 @@ namespace DjustConnect.PartnerAPI.Client.Filters
 {
     public class FarmStatusFilter : PagingFilter
     {
+        public FarmStatusFilter(FarmStatus? status=null)
+        {
+            Status = status;
+        }
         public string FarmNumber { get; set; }
-        public FarmStatus Status { get; set; } 
-        public Sort Sort { get; set; }
+        public FarmStatus? Status { get; set; } 
+        public FarmStatusSort? Sort { get; set; }
     }
-    public enum FarmStatus
+    
+    public enum FarmStatusSort
     {
-        HasUser,
-        NotFound,
-        HasNoUser
-    }
-    public enum Sort
-    {
-        PartnerName, 
-        PartnerId,
         FarmNumber, 
         Status
     }

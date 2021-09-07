@@ -21,18 +21,16 @@ namespace DjustConnect.PartnerAPI.Client.Interfaces
         Task PostConsumerAccessAsync(ConsumerAccessDTO consumerAccessDTO, CancellationToken cancellationToken);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId);
         Task<ResourceHealthDTO[]> GetResourceHealthAsync(Guid? resourceId, CancellationToken cancellationToken);
-        Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter);
-        Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(string resourceNameFilter, CancellationToken cancellationToken);
-        Task<PagedResult<RarStatusDTO>> GetRarStatusAsyncWithFilter(RarStatusFilter filter);
-        Task<PagedResult<RarStatusDTO>> GetRarStatusAsyncWithFilter(RarStatusFilter filter, CancellationToken cancellationToken);
+        Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(RarStatusFilter filter);
+        Task<PagedResult<RarStatusDTO>> GetRarStatusAsync(RarStatusFilter filter, CancellationToken cancellationToken);
         Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter);
         Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
-        Task<PagedResult<DarStatusDTO>> GetDarStatusAsyncWithFilter(DarStatusFilter filter);
-        Task<PagedResult<DarStatusDTO>> GetDarStatusAsyncWithFilter(DarStatusFilter filter, CancellationToken cancellationToken);
+        Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(DarStatusFilter filter);
+        Task<PagedResult<DarStatusDTO>> GetDarStatusAsync(DarStatusFilter filter, CancellationToken cancellationToken);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter);
         Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(string farmNumberFilter, CancellationToken cancellationToken);
-        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter);
-        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsyncWithFilter(FarmStatusFilter filter, CancellationToken cancellationToken);
+        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(FarmStatusFilter filter);
+        Task<PagedResult<FarmStatusDTO>> GetFarmStatusAsync(FarmStatusFilter filter, CancellationToken cancellationToken);
         Task<ConsumerAccessDTO> GetConsumerAccessAsync();
         Task<ConsumerAccessDTO> GetConsumerAccessAsync(CancellationToken cancellationToken);
 

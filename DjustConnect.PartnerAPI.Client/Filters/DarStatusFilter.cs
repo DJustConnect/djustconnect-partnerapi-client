@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,25 @@ namespace DjustConnect.PartnerAPI.Client.Filters
 {
     public class DarStatusFilter : PagingFilter
     {
+        public DarStatusFilter(string farmNumber=null)
+        {
+            FarmNumber = farmNumber;
+        }
         public string FarmNumber { get; set; }
         public Guid? ResourceId { get; set; }
         public string ResourceName { get; set; }
-        public string FarmStatus { get; set; } // TODO enum
-        public string ResourceStatus { get; set; } // TODO enum
-        public string DarStatus { get; set; } // TODO enum
+        public FarmStatus? FarmStatus { get; set; }
+        public AccessRequestStatus? ResourceStatus { get; set; }
+        public DarStatus? DarStatus { get; set; }
+        public DarStatusSort? Sort { get; set; }
+    }
 
+    public enum DarStatusSort
+    {
+        FarmNumber,
+        ResourceName,
+        FarmStatus,
+        ResourceStatus,
+        DarStatus
     }
 }

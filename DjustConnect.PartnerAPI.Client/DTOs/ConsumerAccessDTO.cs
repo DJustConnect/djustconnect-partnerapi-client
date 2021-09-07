@@ -9,8 +9,6 @@ namespace DjustConnect.PartnerAPI.Client.DTOs
 {
     public class ConsumerAccessDTO : BaseDTO 
     {
-        //[JsonProperty("id", Required = Required.Always)]
-        //public Guid Id { get; set; }
         [JsonProperty("accessUntil", Required = Required.AllowNull)]
         public DateTime? AccessUntil { get; set; }
         [JsonProperty("farmsIds", Required = Required.Always)]

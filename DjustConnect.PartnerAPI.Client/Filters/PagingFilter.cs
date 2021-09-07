@@ -10,6 +10,12 @@ namespace DjustConnect.PartnerAPI.Client.Filters
     {
         public int? PageSize { get; set; }
         public int? PageNumber { get; set; }
+        public SortDirection SortDirection { get; set; } = SortDirection.Ascending;
+    }
 
+    public enum SortDirection
+    {
+        Ascending,
+        Descending
     }
 }

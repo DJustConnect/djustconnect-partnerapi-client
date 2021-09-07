@@ -1,13 +1,8 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DjustConnect.PartnerAPI.Client.DTOs
 {
-    public class NotificationResultDTO : BaseDTO
+    public class NotificationResultDTO
     {
         [JsonProperty("receiveNotifications", Required = Required.AllowNull)]
         public bool ReceiveNotifications { get; set; }

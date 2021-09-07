@@ -1,4 +1,5 @@
 ﻿using DjustConnect.PartnerAPI.Client.DTOs;
+using DjustConnect.PartnerAPI.Client.Filters;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,31 +27,33 @@ namespace DjustConnect.PartnerAPI.Client
             _httpClient = httpClient;
         }
 
-        public static HttpClient GetHttpClientWithLocalCertificate(string thumbprint, string subscriptionkey)
+        public static HttpClient GetHttpClientWithLocalCertificate(string thumbprint, string subscriptionkeyDjustConnect)
         {
             var certificate = GetCertificateFromLocalCertStore(thumbprint);
-            return GetHttpClient(certificate, subscriptionkey);
+            return GetHttpClient(certificate, subscriptionkeyDjustConnect);
         }
-        public static HttpClient GetHttpClientWithAzureKeyvaultCertificate(string thumbprint, string subscriptionkey, string keyvaultname, string tenantId, string certSecretname)
+        public static HttpClient GetHttpClientWithAzureKeyvaultCertificate(string subscriptionkeyDjustConnect, string keyvaultname, string tenantId, string certSecretname)
         {
-            var certificate = GetCertificateFromKeyVault(thumbprint, keyvaultname, tenantId, certSecretname);
-            return GetHttpClient(certificate, subscriptionkey);
+            var certificate = GetCertificateFromKeyVault(keyvaultname, tenantId, certSecretname);
+            return GetHttpClient(certificate, subscriptionkeyDjustConnect);
         }
 
-        private static HttpClient GetHttpClient(X509Certificate2 certificate, string subscriptionkey)
+        private static HttpClient GetHttpClient(X509Certificate2 certificate, string subscriptionkeyDjustConnect)
         {
             var clientHandler = new HttpClientHandler();
             clientHandler.ClientCertificates.Add(certificate);
             clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
             var http = new HttpClient(clientHandler);
-            http.DefaultRequestHeaders.Add("DjustConnect-Subscription-Key", subscriptionkey);
+            http.DefaultRequestHeaders.Add("DjustConnect-Subscription-Key", subscriptionkeyDjustConnect);
             return http;
         }
-        private static X509Certificate2 GetCertificateFromKeyVault(string thumbprint, string keyvaultname, string tenantId, string certSecretname)
+
+        private static X509Certificate2 GetCertificateFromKeyVault(string keyvaultname, string tenantId, string certSecretname)
         {
-            var ascs = new AzureSecretClientService(keyvaultname,tenantId);
+            var ascs = new AzureSecretClientService(keyvaultname, tenantId);
             return ascs.GetClientCertificateFromKeyVault(certSecretname);
         }
+
         private static X509Certificate2 GetCertificateFromLocalCertStore(string thumbprint)
         {
             var store = new X509Store("My", StoreLocation.LocalMachine);
@@ -62,8 +65,13 @@ namespace DjustConnect.PartnerAPI.Client
             }
             return certificates[0];
         }
-        public static void AddPaging()
+        
+
+        protected StringBuilder GetUrlBuilder(string endpointPath)
         {
+            var urlBuilder = new StringBuilder();
+            urlBuilder.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append(endpointPath);
+            return urlBuilder;
         }
 
         public static PagedResult<T> GetPagedResult<T>(Dictionary<string, IEnumerable<string>> headers, string json)
@@ -79,7 +87,7 @@ namespace DjustConnect.PartnerAPI.Client
         }
         public static T GetResult<T>(Dictionary<string, IEnumerable<string>> headers, string json)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json);
         }
 
         protected static Dictionary<string, IEnumerable<string>> GetResponseHeaders(HttpResponseMessage response_)
@@ -98,8 +106,13 @@ namespace DjustConnect.PartnerAPI.Client
             var request = new HttpRequestMessage();
             request.Method = new HttpMethod("GET");
             request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
-            var url_ = urlbuilder.ToString();
-            request.RequestUri = new Uri(url_, UriKind.RelativeOrAbsolute);
+            var url = urlbuilder.ToString();
+            if (url.EndsWith("&") || url.EndsWith("?"))
+            {
+                urlbuilder.Length--;
+                url = urlbuilder.ToString();
+            }
+            request.RequestUri = new Uri(url, UriKind.RelativeOrAbsolute);
             return request;
         }
         protected static HttpRequestMessage PostRequestMessage(StringBuilder urlbuilder)
@@ -112,12 +125,7 @@ namespace DjustConnect.PartnerAPI.Client
             return request;
         }
 
-        protected async Task<PagedResult<T>> CallPagedAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken)
-        {
-            return await CallAPI(urlBuilder, GetPagedResult<T>, cancellationToken);
-        }
-
-        protected async Task PostAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken, T dto)
+        protected async Task<System.Net.HttpStatusCode> PostAPI<T>(StringBuilder urlBuilder, T dto, CancellationToken cancellationToken)
         {
             var stringContent = new StringContent(JsonConvert.SerializeObject(dto), Encoding.UTF8, "application/json");
             using (var request_ = PostRequestMessage(urlBuilder))
@@ -131,6 +139,7 @@ namespace DjustConnect.PartnerAPI.Client
                     {
                         throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, null, headers_, null);
                     }
+                    return response_.StatusCode;
                 }
                 finally
                 {
@@ -139,6 +148,18 @@ namespace DjustConnect.PartnerAPI.Client
                 }
             }
         }
+
+        protected async Task<PagedResult<T>> CallPagedAPI<T>(StringBuilder urlBuilder, PagingFilter filter, CancellationToken cancellationToken)
+        {
+            urlBuilder.UrlAppendPaging(filter);
+            return await CallAPI(urlBuilder, GetPagedResult<T>, cancellationToken);
+        }
+
+        protected async Task<T> CallAPI<T>(StringBuilder urlBuilder, CancellationToken cancellationToken) where T : class
+        {
+            return await CallAPI(urlBuilder, GetResult<T>, cancellationToken);
+        }
+
         protected async Task<T> CallAPI<T>(StringBuilder urlBuilder, Func<Dictionary<string, IEnumerable<string>>, string, T> getResult, CancellationToken cancellationToken) where T : class
         {
             try
@@ -152,7 +173,7 @@ namespace DjustConnect.PartnerAPI.Client
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                             try
                             {
                                 var result_ = getResult(headers_, responseData_);
@@ -165,7 +186,7 @@ namespace DjustConnect.PartnerAPI.Client
                         }
                         else if (status_ != "200" && status_ != "204")
                         {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                             throw new DjustConnectException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
                         return null;
@@ -185,7 +206,7 @@ namespace DjustConnect.PartnerAPI.Client
 
     internal static class Extensions
     {
-        public static Dictionary<string, IEnumerable<string>> GetResponseHeaders(this HttpResponseMessage response_)
+        internal static Dictionary<string, IEnumerable<string>> GetResponseHeaders(this HttpResponseMessage response_)
         {
             var headers_ = Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
             if (response_.Content != null && response_.Content.Headers != null)
@@ -194,6 +215,73 @@ namespace DjustConnect.PartnerAPI.Client
                     headers_[item_.Key] = item_.Value;
             }
             return headers_;
+        }
+
+        internal static void UrlAppendPaging(this StringBuilder urlBuilder, PagingFilter filter)
+        {
+            if (filter != null)
+            {
+                urlBuilder.UrlAppendParameter("PageSize", filter.PageSize);
+                urlBuilder.UrlAppendParameter("PageNumber", filter.PageNumber);
+            }
+        }
+
+        internal static void UrlAppendSorting(this StringBuilder urlBuilder, string sortField, PagingFilter filter)
+        {
+            if (!string.IsNullOrWhiteSpace(sortField))
+            {
+                if (filter.SortDirection == SortDirection.Descending)
+                    sortField += "-desc";
+
+                urlBuilder.UrlAppendParameter("sort", sortField);
+            }
+        }
+
+        internal static void UrlAppendParameter(this StringBuilder urlBuilder, string parameterName, object parameter)
+        {
+            if (parameter != null)
+            {
+                if (parameter is not string strparam)
+                {
+                    strparam = ConvertToString(parameter, System.Globalization.CultureInfo.InvariantCulture);
+                }
+                if (!string.IsNullOrEmpty(strparam))
+                    urlBuilder.Append($"{parameterName}=").Append(Uri.EscapeDataString(strparam)).Append('&');
+            }
+        }
+
+        private static string ConvertToString(object value, System.Globalization.CultureInfo cultureInfo)
+        {
+            if (value is Enum)
+            {
+                string name = Enum.GetName(value.GetType(), value);
+                if (name != null)
+                {
+                    var field = System.Reflection.IntrospectionExtensions.GetTypeInfo(value.GetType()).GetDeclaredField(name);
+                    if (field != null)
+                    {
+                        if (System.Reflection.CustomAttributeExtensions.GetCustomAttribute(field, typeof(System.Runtime.Serialization.EnumMemberAttribute)) is System.Runtime.Serialization.EnumMemberAttribute attribute)
+                        {
+                            return attribute.Value;
+                        }
+                    }
+                }
+            }
+            else if (value is bool)
+            {
+                return Convert.ToString(value, cultureInfo).ToLowerInvariant();
+            }
+            else if (value is byte[] v)
+            {
+                return Convert.ToBase64String(v);
+            }
+            else if (value != null && value.GetType().IsArray)
+            {
+                var array = Enumerable.OfType<object>((Array)value);
+                return string.Join(",", Enumerable.Select(array, o => ConvertToString(o, cultureInfo)));
+            }
+
+            return Convert.ToString(value, cultureInfo);
         }
     }
 }
