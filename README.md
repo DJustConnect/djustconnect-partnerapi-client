@@ -7,13 +7,13 @@ Following paragraphs illustrate how to set-up the client, how to talk to the api
 Talking to the partnerapi requires a client certificate to be presented at any request. Depending on your workflow, 
 this consumerclient offers the following HttpClient-options:  
 
-**Consumerclient with your ready-made Httpclient**  
+### Consumerclient with your ready-made Httpclient
 <pre><code>
         public ConsumerClient(HttpClient httpClient) : base(httpClient)
         {
         } 
 </code></pre>
-**Consumerclient with HttpClient presenting a certificate from your Local Machine's personal certificate store**   
+### Consumerclient with HttpClient presenting a certificate from your Local Machine's personal certificate store
 <pre><code>
         public ConsumerClient(string thumbprint, string subscriptionkey)
         {
@@ -36,7 +36,7 @@ this consumerclient offers the following HttpClient-options:
             return certificates[0];
         }
         </code></pre>
-**Consumerclient with HttpClient presenting a certificate from your Azure key vault**  
+### Consumerclient with HttpClient presenting a certificate from your Azure key vault
 <pre><code>
         public ConsumerClient(string subscriptionkeyDjustConnect, string keyvaultname, string tenantId, string certSecretname)
         {
@@ -78,8 +78,9 @@ this consumerclient offers the following HttpClient-options:
         }
         </code></pre>
 
-##Some Highlighted cases
-**GET/POST ConsumerAccess**  
+## Some Highlighted cases
+
+### GET/POST ConsumerAccess
 Managing ConsumerAccess in the portal is a tedious and time-consuming task as subscribed farmIDS might run in the hundreds if not thousands. The ConsumerAccess endpoint(s) 
 of the PartnerAPI allow you to automate this work to any degree that fits your workflow.  
 
@@ -111,12 +112,13 @@ A rudimentary example can be found in the Tests-project:
         }
 </code></pre>
 
-**DarStatus/RarStatus/FarmStatus**  
+### DarStatus/RarStatus/FarmStatus
+
 Get the resp. status of your **D**ata**A**ccess**R**equests, **R**esource**A**ccess**R**equests and Farms using these GET endpoints. All three endpoints can be 
 called with or without filtering. Refer to the Dar-, Rar-, and FarmStatusFilters in the Filters-folder to read about their full specifications.  
 Each filter extends the same **PagingFilter** allowing you to specify the desired number of records per page (**PageSize**) and the number of the page to view (**PageNumber**).
-Furthermore, each separate filter will then add it's own specific properties allowing you to finetune the way your requested data is returned/displayed: the API responds with four keys in the **header** -
-Xpages (the number of pages returned), X-PageNumber (the pagenumber requested in the filter for display), X-PageSize (the amount of records per page as requested in filter) and X-TotalCount (the total 
+Furthermore, each separate filter will then add it's own specific properties allowing you to finetune the way your requested data is returned/displayed: the API responds with four keys in the **header**
+X-pages (the number of pages returned), X-PageNumber (the pagenumber requested in the filter for display), X-PageSize (the amount of records per page as requested in filter) and X-TotalCount (the total 
 amount of records in the response). This information is delivered to the user in a PagedResult including the header's paging information and the deserialized response object.
 <pre><code>
         public static PagedResult<T> GetPagedResult<T>(Dictionary<string, IEnumerable<string>> headers, string json)
@@ -199,8 +201,7 @@ An indication on how to call these endpoints with filtering can be found in the 
             Assert.Equal(FarmStatus.HasUser.ToString(), okResult.Result[0].Status);
         }
 </code></pre>
-
-**Consumer/Resource-Health**  
+### Consumer/Resource-Health
 Get the health-details on any resource you have access to by providing it's ID to the Consumer/Resource-Health endpoint.
 <pre><code>
         [Fact]
@@ -220,7 +221,7 @@ Get the health-details on any resource you have access to by providing it's ID t
         }
 </pre></code>
    
-**Consumer/push, push/activate, push/deactivate**  
+### Consumer/push, push/activate, push/deactivate
 Get your pushnotifications endpoint calling the consumer/push endpoint, (de)activate it calling resp push/activate or
 push/deactivate endpoints providing the notificationendpoint. Simply put: 
 <pre><code>
@@ -250,7 +251,7 @@ push/deactivate endpoints providing the notificationendpoint. Simply put:
         }
 </pre></code>
 
-**Resource**
+### Resource
 Get all available resources. A very straightforward use-case could be to check if a specific resource is available by name:  
 <pre><code>
         [Fact]
@@ -272,10 +273,10 @@ Get all available resources. A very straightforward use-case could be to check i
         }
 </pre></code>
 
-**FarmIdType**  
+### FarmIdType
 Gets an overview of all supported farmIdTypes. Useful for FarmMapping (see next), or verifying if an IdType is supported:    
 <pre><code>
-       [Fact]
+        [Fact]
         public async Task GetFarmIdTypes()
         {
             // Arrange
@@ -294,7 +295,7 @@ Gets an overview of all supported farmIdTypes. Useful for FarmMapping (see next)
             Assert.True(isBeslagNummerSupported);
         }
 </pre></code>
-**FarmMapping** 
+### FarmMapping
 Returns a mapping of associated IDs for every requested (farm)ID. This GET method <span style="color:purple;">does not take url-query parameters but the exceptional requestbody</span> parameters.  
 Typically you'd call this endpoint after acquiring the array of KBO numbers associated with your AADB2C login and pass this array into the 
 FarmMapping endpoint requestbody's requestIDs property. Yet, any type of identifier can in fact be used, as long as it is supported by DjustConnect and you provide 
@@ -331,7 +332,7 @@ the correct farmIdType (use the farmIDType endpoint to know what they are). Brie
 Further information on the partnerAPI's endpoints and schema's can be found in the open spec documentation at "https://partnerapi.djustconnect.be/index.html"   
 
 
-### Internal Abstractions  
+## Internal Abstractions  
 Except for one endpoint (FarmMapping, see further) GET and POST calls are all redirected to the same generic methods.   
 **GET**  
 A typical GET call will have the following structure:  
@@ -349,7 +350,7 @@ A typical GET call will have the following structure:
             return await CallAPI(urlBuilder_, GetResult&lt;EndpointDTO&gt;, cancellationToken);
         }  
 </code></pre>
-**GetResult&lt;T>**  
+### GetResult&lt;T>
 Generic method for deserializing response jsonObject to a desired DTO.  
 <pre><code>
 		public static T GetResult&lt;T>(Dictionary&lt;string, IEnumerable&lt;string>> headers, string json)
@@ -357,7 +358,7 @@ Generic method for deserializing response jsonObject to a desired DTO.
 			return Newtonsoft.Json.JsonConvert.DeserializeObject&lt;T>(json);
 		}
 </code></pre>
-**CallAPI**  
+### CallAPI
 Generic method calling the PartnerApi on the specified endpoint and returning the response as the specified DTO-type  
 <pre><code>
         protected async Task&lt;T> CallAPI&lt;T>(StringBuilder urlBuilder, Func&lt;Dictionary&lt;string, IEnumerable&lt;string>>, string, T> getResult, CancellationToken cancellationToken) where T : class
@@ -405,7 +406,7 @@ Generic method calling the PartnerApi on the specified endpoint and returning th
     }
 </code></pre>
 
-**GetRequestMessage**  
+### GetRequestMessage
 Straightforward helpermethod returning a standard GET HttpRequestMessage for the requested url
 <pre><code>
         protected static HttpRequestMessage GetRequestMessage(StringBuilder urlbuilder)
@@ -419,7 +420,7 @@ Straightforward helpermethod returning a standard GET HttpRequestMessage for the
         }
 </code></pre>
 
-**POST**  
+### POST
 A typical POST call will have the following structure:  
 <pre><code>
         public Task PostEndpointAsync(EndpointDTO endpointDTO)
@@ -435,7 +436,7 @@ A typical POST call will have the following structure:
         }
 </code></pre>
 
-**PostAPI**  
+### PostAPI
 Generic method for sending data to the PartnerAPI (e.g. to configure settings or add consumeraccess subjects, see further)  
 <pre><code>        
     protected async Task PostAPI&lt;T>(StringBuilder urlBuilder, CancellationToken cancellationToken, T dto)
@@ -462,7 +463,7 @@ Generic method for sending data to the PartnerAPI (e.g. to configure settings or
         }
         </code></pre>
 
-**PostRequestMessage**  
+### PostRequestMessage
 Straightforward helpermethod returning a standard Post HttpRequestMessage for the requested url
 <pre><code>
         protected static HttpRequestMessage PostRequestMessage(StringBuilder urlbuilder)
@@ -476,7 +477,7 @@ Straightforward helpermethod returning a standard Post HttpRequestMessage for th
         }
 </code></pre>
 
-**GetResponseHeaders**  
+### GetResponseHeaders
 Extension method mapping headers from an HttpResponseMessage to a Dictionary  
 <pre><code>
         public static Dictionary&lt;string, IEnumerable&lt;string>> GetResponseHeaders(this HttpResponseMessage response_)
